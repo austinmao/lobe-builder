@@ -8,6 +8,7 @@ export interface PortalArtifact {
 }
 
 export enum ArtifactType {
+  Builder = 'application/lobe.artifacts.builder',
   Code = 'application/lobe.artifacts.code',
   Default = 'html',
   Python = 'python',
