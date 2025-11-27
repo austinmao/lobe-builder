@@ -1,5 +1,6 @@
 // Minimal stub to satisfy type-check for TASK-006
 // Full implementation will be added in TASK-005
+// Note: This file will be deleted when migrating to Payload CMS (Phase 5)
 
 interface BuilderPreviewPageProps {
   params: Promise<{ slug: string }>;
