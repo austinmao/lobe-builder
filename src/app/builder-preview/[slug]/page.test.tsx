@@ -17,7 +17,7 @@ vi.mock('@builder.io/sdk', () => ({
 }));
 
 vi.mock('@builder.io/sdk-react-nextjs', () => ({
-  RenderBuilderContent: ({ content }: any) => (
+  Content: ({ content }: any) => (
     <div data-testid="builder-content">{content?.data?.title || 'No title'}</div>
   ),
 }));

@@ -14,69 +14,80 @@ tasks:
   - id: TASK-001
     title: "Write unit tests for pageSpecToBuilderContent"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-001/"
     type: test-red
+    completed_at: "2025-11-27"
 
   - id: TASK-002
     title: "Write unit tests for BuilderRenderer component"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-002/"
     type: test-red
+    completed_at: "2025-11-27"
 
   - id: TASK-003
     title: "Write integration tests for Builder page API route"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-003/"
     type: test-red
+    completed_at: "2025-11-27"
 
   - id: TASK-004
     title: "Write integration tests for Builder preview route"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-004/"
     type: test-red
+    completed_at: "2025-11-27"
 
   # GREEN Phase - Make tests pass with minimal implementation
   - id: TASK-005
     title: "Add Builder artifact type to types"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-005/"
     type: implementation-green
     dependencies: []
+    completed_at: "2025-11-27"
 
   - id: TASK-006
     title: "Implement BuilderRenderer component"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-006/"
     type: implementation-green
     dependencies: [TASK-002]
+    completed_at: "2025-11-27"
 
   - id: TASK-007
     title: "Integrate BuilderRenderer into Renderer/index.tsx"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-007/"
     type: implementation-green
     dependencies: [TASK-005, TASK-006]
+    completed_at: "2025-11-27"
 
   - id: TASK-008
     title: "Implement Builder preview API route"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-008/"
     type: implementation-green
     dependencies: [TASK-004]
+    completed_at: "2025-11-27"
 
 summary:
   total_tasks: 8
   red_phase_tasks: 4
   green_phase_tasks: 4
+  completed_tasks: 8
+  completion_percentage: 100
   estimated_total_minutes: 198
+  execution_completed: "2025-11-27"
 
 execution_order:
   parallel_groups:
