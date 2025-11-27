@@ -411,6 +411,23 @@
     ],
     "overrides": {
       "stylelint-config-clean-order": "7.0.0"
-    }
+    },
+    "ignoredBuiltDependencies": [
+      "@clerk/shared",
+      "@playwright/browser-chromium",
+      "@scarf/scarf",
+      "@tree-sitter-grammars/tree-sitter-yaml",
+      "better-sqlite3",
+      "canvas",
+      "core-js",
+      "core-js-pure",
+      "es5-ext",
+      "esbuild",
+      "protobufjs",
+      "sharp",
+      "tree-sitter",
+      "tree-sitter-json",
+      "unrs-resolver"
+    ]
   }
 }
