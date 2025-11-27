@@ -1,0 +1,46 @@
+id: TASK-002
+title: "Write unit tests for BuilderRenderer component"
+objective: |
+  Create failing unit tests for the BuilderRenderer React component that displays
+  Builder.io pages in an iframe. These tests define the expected rendering behavior
+  before implementation (TDD RED phase).
+scope:
+  - "Create test file at src/features/Portal/Artifacts/Body/Renderer/Builder.test.tsx"
+  - "Write 5 test cases covering valid content, styles, and error handling"
+  - "Verify tests fail initially (component does not exist yet)"
+constraints:
+  - "Use Vitest with happy-dom environment"
+  - "Use @testing-library/react for component testing"
+  - "Follow LobeChat testing conventions"
+  - "Time constraint: 25-35 minutes"
+acceptance_criteria:
+  - "BLOCKING: Test file exists at src/features/Portal/Artifacts/Body/Renderer/Builder.test.tsx"
+  - "BLOCKING: Test 'should render iframe with correct src when given valid JSON' is written"
+  - "BLOCKING: Test 'should render iframe with full width and height styles' is written"
+  - "BLOCKING: Test 'should display error message when content is invalid JSON' is written"
+  - "BLOCKING: Test 'should display error message when builderUrl is missing' is written"
+  - "BLOCKING: Test 'should display error message when builderUrl is empty string' is written"
+  - "BLOCKING: Running tests produces FAIL result (expected - TDD RED phase)"
+deliverables:
+  - "src/features/Portal/Artifacts/Body/Renderer/Builder.test.tsx"
+risks:
+  - "Risk: happy-dom may not fully support iframe testing. Mitigation: Use proper mocking"
+out_of_scope:
+  - "Implementation of BuilderRenderer component"
+  - "Integration with Renderer/index.tsx"
+  - "E2E tests"
+estimated_minutes: 30
+dependencies: []
+phase: "foundation-tests"
+status: pending
+created_date: "2025-11-27"
+testing_requirements:
+  test_type: "unit"
+  framework: "vitest"
+  environment: "happy-dom"
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'Builder.test.tsx'"
+code_quality:
+  max_complexity: 5
+  max_function_length: 30
+  max_nesting: 2

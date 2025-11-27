@@ -1,0 +1,44 @@
+id: TASK-001
+title: "Write unit tests for pageSpecToBuilderContent function"
+objective: |
+  Create failing unit tests for the pageSpecToBuilderContent function that converts
+  PageSpec JSON to Builder.io block format. These tests define the expected behavior
+  before implementation (TDD RED phase).
+scope:
+  - "Create test file at src/server/services/builder/pageSpecToBuilderContent.test.ts"
+  - "Write 4 test cases covering hero section, text section, error handling, and multiple sections"
+  - "Verify tests fail initially (function does not exist yet)"
+constraints:
+  - "Use Vitest as test framework"
+  - "Follow LobeChat testing conventions from .cursor/rules/testing-guide/testing-guide.mdc"
+  - "Tests must be specific and cover exact expected output structure"
+  - "Time constraint: 20-30 minutes"
+acceptance_criteria:
+  - "BLOCKING: Test file exists at src/server/services/builder/pageSpecToBuilderContent.test.ts"
+  - "BLOCKING: Test 'should convert hero section to Builder block with correct structure' is written"
+  - "BLOCKING: Test 'should convert text section to Builder block with HTML content' is written"
+  - "BLOCKING: Test 'should throw error for unknown section type' is written"
+  - "BLOCKING: Test 'should convert multiple sections in correct order' is written"
+  - "BLOCKING: Running tests produces FAIL result (expected - TDD RED phase)"
+deliverables:
+  - "src/server/services/builder/pageSpecToBuilderContent.test.ts"
+risks:
+  - "Risk: Tests may not cover all edge cases. Mitigation: Follow test cases defined in PRD Section 3.3.1"
+out_of_scope:
+  - "Implementation of pageSpecToBuilderContent function"
+  - "Integration tests"
+  - "E2E tests"
+estimated_minutes: 25
+dependencies: []
+phase: "foundation-tests"
+status: pending
+created_date: "2025-11-27"
+testing_requirements:
+  test_type: "unit"
+  framework: "vitest"
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'pageSpecToBuilderContent.test.ts'"
+code_quality:
+  max_complexity: 5
+  max_function_length: 30
+  max_nesting: 2

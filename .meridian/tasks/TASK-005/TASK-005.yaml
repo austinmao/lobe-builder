@@ -1,0 +1,30 @@
+id: TASK-005
+title: "Add Builder artifact type to LobeChat types"
+objective: |
+  Add the new ArtifactType.Builder enum value to packages/types/src/artifact.ts.
+  This is a configuration task that enables the artifact system to recognize
+  Builder.io page artifacts.
+scope:
+  - "Add 'Builder = application/lobe.artifacts.builder' to ArtifactType enum"
+  - "Verify existing artifact types are preserved"
+  - "Verify TypeScript compilation succeeds"
+constraints:
+  - "Do not modify existing enum values"
+  - "Follow existing code style in artifact.ts"
+  - "Time constraint: 10-15 minutes"
+acceptance_criteria:
+  - "BLOCKING: ArtifactType enum contains 'Builder = application/lobe.artifacts.builder'"
+  - "BLOCKING: Existing ArtifactType values (Code, Default, Python, React) are unchanged"
+  - "BLOCKING: TypeScript compilation succeeds without errors"
+deliverables:
+  - "packages/types/src/artifact.ts (modified)"
+risks:
+  - "Risk: May conflict with existing exports. Mitigation: Check file structure first"
+out_of_scope:
+  - "Renderer implementation"
+  - "Tests for this change"
+estimated_minutes: 10
+dependencies: []
+phase: "phase-0-implementation"
+status: pending
+created_date: "2025-11-27"

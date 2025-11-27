@@ -1,0 +1,49 @@
+id: TASK-006
+title: "Implement BuilderRenderer component"
+objective: |
+  Implement the BuilderRenderer React component that renders Builder.io pages
+  in an iframe. This is the GREEN phase - making the tests from TASK-002 pass.
+scope:
+  - "Create src/features/Portal/Artifacts/Body/Renderer/Builder.tsx"
+  - "Parse JSON content to extract builderUrl"
+  - "Render iframe with correct src and styles"
+  - "Display error message for invalid content"
+  - "Run TASK-002 tests and verify they PASS"
+constraints:
+  - "Must pass all tests in Builder.test.tsx"
+  - "Use memo for performance optimization"
+  - "Use useMemo for JSON parsing"
+  - "Follow LobeChat component conventions"
+  - "Time constraint: 20-30 minutes"
+acceptance_criteria:
+  - "BLOCKING: BuilderRenderer component exists at src/features/Portal/Artifacts/Body/Renderer/Builder.tsx"
+  - "BLOCKING: Component parses JSON content and extracts builderUrl"
+  - "BLOCKING: Component renders iframe with src={builderUrl}"
+  - "BLOCKING: Component renders iframe with styles: border none, 100% width, 100% height"
+  - "BLOCKING: Component displays 'Invalid Builder artifact' when JSON is invalid"
+  - "BLOCKING: Component displays error when builderUrl is missing or empty"
+  - "BLOCKING: All tests in Builder.test.tsx PASS"
+deliverables:
+  - "src/features/Portal/Artifacts/Body/Renderer/Builder.tsx"
+risks:
+  - "Risk: Style specificity issues. Mitigation: Use inline styles as specified"
+out_of_scope:
+  - "Integration with Renderer/index.tsx"
+  - "E2E testing"
+estimated_minutes: 25
+dependencies: ["TASK-002"]
+phase: "phase-0-implementation"
+status: pending
+created_date: "2025-11-27"
+testing_requirements:
+  coverage: "100%"
+  required_tests:
+    - "Happy path: Valid JSON with builderUrl renders iframe"
+    - "Error paths: Invalid JSON, missing builderUrl, empty builderUrl"
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'Builder.test.tsx'"
+code_quality:
+  max_complexity: 5
+  max_function_length: 30
+  max_nesting: 2
+  no_magic_numbers: true

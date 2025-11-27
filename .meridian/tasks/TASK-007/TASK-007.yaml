@@ -1,0 +1,43 @@
+id: TASK-007
+title: "Integrate BuilderRenderer into Renderer/index.tsx"
+objective: |
+  Register the Builder artifact type in the Renderer component's switch statement
+  so that Builder artifacts are routed to the BuilderRenderer component.
+scope:
+  - "Add import for BuilderRenderer in src/features/Portal/Artifacts/Body/Renderer/index.tsx"
+  - "Add ArtifactType.Builder case to switch statement"
+  - "Return BuilderRenderer component for Builder type"
+constraints:
+  - "Must follow existing pattern in index.tsx switch statement"
+  - "Must import BuilderRenderer as lazy/dynamic if other renderers are lazy"
+  - "Time constraint: 15-20 minutes"
+acceptance_criteria:
+  - "BLOCKING: BuilderRenderer imported in Renderer/index.tsx"
+  - "BLOCKING: ArtifactType.Builder case added to switch statement"
+  - "BLOCKING: BuilderRenderer rendered for Builder artifact type"
+  - "BLOCKING: TypeScript compilation passes"
+  - "BLOCKING: Existing renderer tests still pass"
+deliverables:
+  - "Updated src/features/Portal/Artifacts/Body/Renderer/index.tsx"
+risks:
+  - "Risk: Import cycle. Mitigation: Use same import pattern as other renderers"
+out_of_scope:
+  - "E2E testing"
+  - "Visual regression testing"
+estimated_minutes: 18
+dependencies: ["TASK-005", "TASK-006"]
+phase: "phase-0-implementation"
+status: pending
+created_date: "2025-11-27"
+testing_requirements:
+  coverage: "100%"
+  required_tests:
+    - "Renderer routes Builder type to BuilderRenderer"
+  validation_commands:
+    - "bun run type-check"
+    - "bunx vitest run --silent='passed-only' 'Renderer'"
+code_quality:
+  max_complexity: 5
+  max_function_length: 50
+  max_nesting: 3
+  no_magic_numbers: true

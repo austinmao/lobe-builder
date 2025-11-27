@@ -1,0 +1,45 @@
+id: TASK-003
+title: "Write integration tests for Builder page API route"
+objective: |
+  Create failing integration tests for POST /api/builder/page endpoint that creates
+  Builder.io pages from PageSpec. These tests verify API behavior with mocked
+  external dependencies (TDD RED phase).
+scope:
+  - "Create test file at src/app/(backend)/api/builder/page/route.test.ts"
+  - "Write 4 test cases covering success, block structure, and error handling"
+  - "Mock Builder.io API and environment variables"
+  - "Verify tests fail initially (route does not exist yet)"
+constraints:
+  - "Use Vitest with vi.stubEnv for environment variables"
+  - "Mock global.fetch for Builder API calls"
+  - "Follow LobeChat testing conventions"
+  - "Time constraint: 30-40 minutes"
+acceptance_criteria:
+  - "BLOCKING: Test file exists at src/app/(backend)/api/builder/page/route.test.ts"
+  - "BLOCKING: Test 'should create Builder page and return slug' is written"
+  - "BLOCKING: Test 'should send correct Builder block structure' is written"
+  - "BLOCKING: Test 'should return 500 when Builder API fails' is written"
+  - "BLOCKING: Test 'should return 400 for invalid PageSpec schema' is written"
+  - "BLOCKING: Running tests produces FAIL result (expected - TDD RED phase)"
+deliverables:
+  - "src/app/(backend)/api/builder/page/route.test.ts"
+risks:
+  - "Risk: Mocking fetch may be complex. Mitigation: Use vi.fn() pattern from PRD"
+out_of_scope:
+  - "Implementation of route.ts"
+  - "E2E tests"
+  - "Actual Builder.io API calls"
+estimated_minutes: 35
+dependencies: []
+phase: "foundation-tests"
+status: pending
+created_date: "2025-11-27"
+testing_requirements:
+  test_type: "integration"
+  framework: "vitest"
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'route.test.ts'"
+code_quality:
+  max_complexity: 5
+  max_function_length: 40
+  max_nesting: 3

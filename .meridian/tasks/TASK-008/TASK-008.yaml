@@ -1,0 +1,51 @@
+id: TASK-008
+title: "Implement Builder preview API route"
+objective: |
+  Create the Next.js API route that fetches Builder.io content and returns it
+  for preview in the BuilderRenderer iframe. This enables previewing Builder pages
+  within LobeChat artifacts.
+scope:
+  - "Create src/app/(backend)/api/builder/preview/route.ts"
+  - "Accept builderUrl query parameter"
+  - "Fetch content from Builder.io Content Delivery API"
+  - "Return HTML content suitable for iframe rendering"
+  - "Handle errors gracefully"
+constraints:
+  - "Must use Next.js 15 App Router conventions"
+  - "Must validate builderUrl parameter"
+  - "Must handle Builder.io API errors"
+  - "Time constraint: 30-40 minutes"
+acceptance_criteria:
+  - "BLOCKING: API route exists at /api/builder/preview"
+  - "BLOCKING: Accepts builderUrl query parameter"
+  - "BLOCKING: Fetches content from Builder.io"
+  - "BLOCKING: Returns HTML content"
+  - "BLOCKING: Returns 400 for missing/invalid builderUrl"
+  - "BLOCKING: Returns 500 for Builder.io API errors"
+  - "BLOCKING: All integration tests pass"
+deliverables:
+  - "src/app/(backend)/api/builder/preview/route.ts"
+risks:
+  - "Risk: Builder.io API rate limits. Mitigation: Implement caching"
+  - "Risk: CORS issues with iframe. Mitigation: Set appropriate headers"
+out_of_scope:
+  - "Authentication/authorization"
+  - "Caching implementation"
+  - "Analytics tracking"
+estimated_minutes: 35
+dependencies: ["TASK-004"]
+phase: "phase-0-implementation"
+status: pending
+created_date: "2025-11-27"
+testing_requirements:
+  coverage: "80%"
+  required_tests:
+    - "Happy path: Valid builderUrl returns HTML"
+    - "Error paths: Missing builderUrl, invalid URL, API errors"
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'builder/preview'"
+code_quality:
+  max_complexity: 8
+  max_function_length: 40
+  max_nesting: 3
+  no_magic_numbers: true

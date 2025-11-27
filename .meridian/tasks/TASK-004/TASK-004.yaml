@@ -1,0 +1,45 @@
+id: TASK-004
+title: "Write integration tests for Builder preview route"
+objective: |
+  Create failing integration tests for GET /builder-preview/[slug] page that renders
+  Builder.io content in an iframe-embeddable format. Tests verify page behavior with
+  mocked Builder SDK (TDD RED phase).
+scope:
+  - "Create test file at src/app/builder-preview/[slug]/page.test.tsx"
+  - "Write 3 test cases covering success, 404, and SDK configuration"
+  - "Mock @builder.io/sdk and @builder.io/sdk-react-nextjs"
+  - "Verify tests fail initially (page does not exist yet)"
+constraints:
+  - "Use Vitest with happy-dom environment"
+  - "Use @testing-library/react for component testing"
+  - "Mock Builder SDK modules completely"
+  - "Time constraint: 30-40 minutes"
+acceptance_criteria:
+  - "BLOCKING: Test file exists at src/app/builder-preview/[slug]/page.test.tsx"
+  - "BLOCKING: Test 'should render Builder content when page exists' is written"
+  - "BLOCKING: Test 'should display 404 message when page not found' is written"
+  - "BLOCKING: Test 'should fetch page with includeUnpublished option' is written"
+  - "BLOCKING: Running tests produces FAIL result (expected - TDD RED phase)"
+deliverables:
+  - "src/app/builder-preview/[slug]/page.test.tsx"
+risks:
+  - "Risk: Async server components may be complex to test. Mitigation: Test return value directly"
+out_of_scope:
+  - "Implementation of page.tsx"
+  - "Implementation of layout.tsx"
+  - "E2E tests"
+estimated_minutes: 35
+dependencies: []
+phase: "foundation-tests"
+status: pending
+created_date: "2025-11-27"
+testing_requirements:
+  test_type: "integration"
+  framework: "vitest"
+  environment: "happy-dom"
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'page.test.tsx'"
+code_quality:
+  max_complexity: 5
+  max_function_length: 40
+  max_nesting: 3
