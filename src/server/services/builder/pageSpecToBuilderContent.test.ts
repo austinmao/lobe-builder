@@ -7,6 +7,7 @@ describe('pageSpecToBuilderContent', () => {
   describe('hero section mapping', () => {
     it('should convert hero section to Builder block with correct structure', () => {
       const pageSpec: PageSpec = {
+        tenantId: 'test-tenant',
         slug: 'test-page',
         title: 'Test Page',
         sections: [
@@ -39,6 +40,7 @@ describe('pageSpecToBuilderContent', () => {
   describe('text section mapping', () => {
     it('should convert text section to Builder block with HTML content', () => {
       const pageSpec: PageSpec = {
+        tenantId: 'test-tenant',
         slug: 'test-page',
         title: 'Test Page',
         sections: [
@@ -60,6 +62,7 @@ describe('pageSpecToBuilderContent', () => {
   describe('error handling', () => {
     it('should throw error for unknown section type', () => {
       const pageSpec: PageSpec = {
+        tenantId: 'test-tenant',
         slug: 'test-page',
         title: 'Test Page',
         sections: [{ type: 'unknown' as any }],
@@ -72,6 +75,7 @@ describe('pageSpecToBuilderContent', () => {
   describe('multiple sections', () => {
     it('should convert multiple sections in correct order', () => {
       const pageSpec: PageSpec = {
+        tenantId: 'test-tenant',
         slug: 'test-page',
         title: 'Test Page',
         sections: [
