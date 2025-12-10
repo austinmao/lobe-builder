@@ -1,45 +1,42 @@
 id: TASK-004
-title: "Write integration tests for Builder preview route"
+title: "Fix MCP navigation and featured assistant E2E test assertions"
 objective: |
-  Create failing integration tests for GET /builder-preview/[slug] page that renders
-  Builder.io content in an iframe-embeddable format. Tests verify page behavior with
-  mocked Builder SDK (TDD RED phase).
+  Fix the navigation assertion tests that are failing due to incorrect URL path expectations
+  or element interaction issues.
+  
+  This fix addresses:
+  - DISCOVER-INTERACT-011: Navigate from home to MCP list (URL assertion failed)
+  - DISCOVER-INTERACT-012: Click featured assistant from home (element interaction error)
 scope:
-  - "Create test file at src/app/builder-preview/[slug]/page.test.tsx"
-  - "Write 3 test cases covering success, 404, and SDK configuration"
-  - "Mock @builder.io/sdk and @builder.io/sdk-react-nextjs"
-  - "Verify tests fail initially (page does not exist yet)"
+  - "Analyze actual navigation URLs for MCP section"
+  - "Update URL assertion in 'I should be navigated to' step"
+  - "Debug featured assistant card interaction"
 constraints:
-  - "Use Vitest with happy-dom environment"
-  - "Use @testing-library/react for component testing"
-  - "Mock Builder SDK modules completely"
-  - "Time constraint: 30-40 minutes"
+  - "Must verify actual URL patterns used by application"
+  - "Time constraint: 30-45 minutes"
 acceptance_criteria:
-  - "BLOCKING: Test file exists at src/app/builder-preview/[slug]/page.test.tsx"
-  - "BLOCKING: Test 'should render Builder content when page exists' is written"
-  - "BLOCKING: Test 'should display 404 message when page not found' is written"
-  - "BLOCKING: Test 'should fetch page with includeUnpublished option' is written"
-  - "BLOCKING: Running tests produces FAIL result (expected - TDD RED phase)"
+  - "BLOCKING: DISCOVER-INTERACT-011 test passes when navigating to MCP list"
+  - "BLOCKING: DISCOVER-INTERACT-012 test passes when clicking featured assistant"
+  - "All smoke tests continue to pass"
 deliverables:
-  - "src/app/builder-preview/[slug]/page.test.tsx"
+  - "e2e/src/steps/discover/interactions.steps.ts - updated navigation assertions"
 risks:
-  - "Risk: Async server components may be complex to test. Mitigation: Test return value directly"
+  - "MCP section may use different URL structure than expected"
+  - "Featured assistant cards may have overlay elements blocking click"
 out_of_scope:
-  - "Implementation of page.tsx"
-  - "Implementation of layout.tsx"
-  - "E2E tests"
+  - "Modifying home page layout"
+  - "Adding new navigation tests"
 estimated_minutes: 35
-dependencies: []
-phase: "foundation-tests"
+dependencies: ["TASK-001"]
+phase: "testing"
 status: pending
-created_date: "2025-11-27"
+created_date: "2025-12-10"
 testing_requirements:
-  test_type: "integration"
-  framework: "vitest"
-  environment: "happy-dom"
+  coverage: "N/A - test infrastructure fix"
+  required_tests:
+    - "Run DISCOVER-INTERACT-011 and verify pass"
+    - "Run DISCOVER-INTERACT-012 and verify pass"
+    - "Manually verify navigation URLs in browser"
   validation_commands:
-    - "bunx vitest run --silent='passed-only' 'page.test.tsx'"
-code_quality:
-  max_complexity: 5
-  max_function_length: 40
-  max_nesting: 3
+    - "pnpm --filter @lobechat/e2e-tests test -- --name 'Navigate from home'"
+    - "pnpm --filter @lobechat/e2e-tests test -- --name 'Click featured'"

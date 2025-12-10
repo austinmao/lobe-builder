@@ -1,45 +1,44 @@
 # TASK-002 Implementation Plan
 
-## Objective
+## Problem Analysis
 
-Write failing unit tests for BuilderRenderer component (TDD RED phase)
+E2E tests expect `[data-testid="detail-content"]` selector but detail page components don't have this attribute. Tests check for `main` or `article` as fallbacks, but these may not be specific enough.
+
+## Files to Modify
+
+1. **Assistant Details**: `src/app/[variants]/(main)/discover/(detail)/assistant/features/Details/index.tsx`
+   - Add `data-testid="detail-content"` to outer Flexbox at line 26
+
+2. **Model Details**: `src/app/[variants]/(main)/discover/(detail)/model/features/Details/index.tsx`
+   - Locate main wrapper and add data-testid
+
+3. **Provider Details**: `src/app/[variants]/(main)/discover/(detail)/provider/features/Details/index.tsx`
+   - Locate main wrapper and add data-testid
+
+4. **MCP Details**: `src/app/[variants]/(main)/discover/(detail)/mcp/features/Details/index.tsx`
+   - Locate main wrapper and add data-testid
 
 ## Implementation Steps
 
-### Step 1: Create test file
+For each file:
 
-- Create file: `src/features/Portal/Artifacts/Body/Renderer/Builder.test.tsx`
+1. Open the Details/index.tsx file
+2. Find the outermost Flexbox or container component
+3. Add `data-testid="detail-content"` prop
+4. Save file
 
-### Step 2: Write test setup with vitest-environment comment
+## Example Change (Assistant)
 
-```typescript
-/**
- * @vitest-environment happy-dom
- */
-import { render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+```tsx
+// Before
+<Flexbox gap={24}>
 
-import BuilderRenderer from './Builder';
+// After
+<Flexbox data-testid="detail-content" gap={24}>
 ```
-
-### Step 3: Write valid content rendering tests
-
-- Test iframe renders with correct src
-- Test iframe has correct styles (border: none, 100% dimensions)
-
-### Step 4: Write error handling tests
-
-- Test invalid JSON displays error message
-- Test missing builderUrl displays error message
-- Test empty builderUrl displays error message
-
-### Step 5: Verify tests fail
-
-- Run: `bunx vitest run --silent='passed-only' 'Builder.test.tsx'`
-- Expected: Tests should FAIL (component doesn't exist)
 
 ## Verification
 
-- [ ] Test file created with @vitest-environment happy-dom
-- [ ] All 5 test cases written
-- [ ] Tests fail when run (RED phase confirmed)
+```bash
+pnpm --filter @lobechat/e2e-tests test -- --tags '@detail-pages'
+```

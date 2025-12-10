@@ -1,48 +1,39 @@
 # TASK-001 Implementation Plan
 
-## Objective
+## Problem Analysis
 
-Write failing unit tests for pageSpecToBuilderContent function (TDD RED phase)
+The E2E test uses selector `[data-testid="category-filter"]` in `e2e/src/steps/discover/interactions.steps.ts:52-54` but the actual CategoryMenu component at `src/app/[variants]/(main)/discover/components/CategoryMenu.tsx:37` uses `[data-testid="category-menu"]`.
 
 ## Implementation Steps
 
-### Step 1: Create test file structure
-
-- Create directory: `src/server/services/builder/`
-- Create file: `pageSpecToBuilderContent.test.ts`
-
-### Step 2: Write test imports and setup
-
-```typescript
-import type { PageSpec } from '@lobechat/types';
-import { describe, expect, it } from 'vitest';
-
-import { pageSpecToBuilderContent } from './pageSpecToBuilderContent';
-```
-
-### Step 3: Write hero section test
-
-- Test that hero section converts to Builder block with correct '@type', component name, and options
-
-### Step 4: Write text section test
-
-- Test that text section converts to HTML content with h2 and p tags
-
-### Step 5: Write error handling test
-
-- Test that unknown section type throws specific error message
-
-### Step 6: Write multiple sections test
-
-- Test that multiple sections convert in correct order
-
-### Step 7: Verify tests fail
-
-- Run: `bunx vitest run --silent='passed-only' 'pageSpecToBuilderContent.test.ts'`
-- Expected: Tests should FAIL (implementation doesn't exist)
+1. Open `e2e/src/steps/discover/interactions.steps.ts`
+2. Locate lines 52-54 in the `I click on a category in the category filter` step
+3. Change the selector from:
+   ```typescript
+   const categoryItems = this.page.locator(
+     '[data-testid="category-filter"] button, [data-testid="category-menu"] button',
+   );
+   ```
+   To:
+   ```typescript
+   const categoryItems = this.page.locator(
+     '[data-testid="category-menu"] button, [role="menu"] button',
+   );
+   ```
+4. Run tests to verify fix
 
 ## Verification
 
-- [ ] Test file created
-- [ ] All 4 test cases written
-- [ ] Tests fail when run (RED phase confirmed)
+```bash
+# Start dev server
+bun run dev &
+
+# Wait for server
+sleep 30
+
+# Run specific interaction tests
+pnpm --filter @lobechat/e2e-tests test -- --tags '@interactions'
+
+# Run smoke tests to verify no regressions
+pnpm --filter @lobechat/e2e-tests test:smoke
+```

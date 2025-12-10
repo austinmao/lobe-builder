@@ -1,51 +1,52 @@
 # TASK-003 Implementation Plan
 
-## Objective
+## Problem Analysis
 
-Write failing integration tests for Builder page API route (TDD RED phase)
+The test expects URL to contain `page=` or `p=` after clicking pagination. Looking at `src/app/[variants]/(main)/discover/(list)/features/Pagination.tsx:44`, the component does use `page=` parameter:
+
+```typescript
+searchParams.set('page', String(newPage));
+navigate(`/discover/${tab}?${searchParams.toString()}`);
+```
+
+## Root Cause Investigation
+
+The issue may be:
+
+1. Test clicks "next" but pagination component may not have "Next" text - uses antd Pagination
+2. The selector may not be finding the correct pagination button
+3. There may be a race condition between click and URL update
 
 ## Implementation Steps
 
-### Step 1: Create test file and directory
+1. **Verify pagination button selector** at lines 79-81:
 
-- Ensure directory exists: `src/app/(backend)/api/builder/page/`
-- Create file: `route.test.ts`
+   ```typescript
+   const nextButton = this.page.locator(
+     'button:has-text("Next"), button[aria-label*="next" i], .pagination button:last-child',
+   );
+   ```
 
-### Step 2: Write test setup
+   The antd Pagination component uses different structure - update to:
 
-```typescript
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+   ```typescript
+   const nextButton = this.page.locator(
+     '[data-testid="pagination"] .ant-pagination-next, .ant-pagination-next',
+   );
+   ```
 
-import { POST } from './route';
-
-vi.stubEnv('BUILDER_PRIVATE_API_KEY', 'test-private-key');
-vi.stubEnv('NEXT_PUBLIC_BUILDER_API_KEY', 'test-public-key');
-```
-
-### Step 3: Write successful page creation test
-
-- Mock fetch to return success
-- Verify response status 200 and slug returned
-- Verify Builder API called with correct auth header
-
-### Step 4: Write block structure test
-
-- Verify correct Builder block structure in request body
-- Check component name is 'Hero'
-
-### Step 5: Write error handling tests
-
-- Test 500 response when Builder API fails
-- Test 400 response for invalid PageSpec
-
-### Step 6: Verify tests fail
-
-- Run: `bunx vitest run --silent='passed-only' 'route.test.ts'`
-- Expected: Tests should FAIL (route doesn't exist)
+2. **Update URL assertion** at lines 316-322 to wait for URL to actually change:
+   ```typescript
+   // Wait for URL to update after pagination
+   await this.page.waitForFunction(() => window.location.search.includes('page='), {
+     timeout: 10000,
+   });
+   const currentUrl = this.page.url();
+   expect(currentUrl.includes('page=')).toBeTruthy();
+   ```
 
 ## Verification
 
-- [ ] Test file created
-- [ ] All 4 test cases written
-- [ ] Environment variables mocked properly
-- [ ] Tests fail when run (RED phase confirmed)
+```bash
+pnpm --filter @lobechat/e2e-tests test -- --name 'Navigate to next page'
+```

@@ -1,44 +1,46 @@
 id: TASK-001
-title: "Write unit tests for pageSpecToBuilderContent function"
+title: "Fix category filter E2E test selector mismatch"
 objective: |
-  Create failing unit tests for the pageSpecToBuilderContent function that converts
-  PageSpec JSON to Builder.io block format. These tests define the expected behavior
-  before implementation (TDD RED phase).
+  Update E2E test step definitions to use the correct selector for category filtering.
+  The tests currently use `[data-testid="category-filter"]` but the actual component 
+  uses `[data-testid="category-menu"]` (see src/app/[variants]/(main)/discover/components/CategoryMenu.tsx:37).
+  
+  This fix addresses 2 failing tests:
+  - DISCOVER-INTERACT-002: Filter assistants by category
+  - DISCOVER-INTERACT-008: Filter MCP tools by category
 scope:
-  - "Create test file at src/server/services/builder/pageSpecToBuilderContent.test.ts"
-  - "Write 4 test cases covering hero section, text section, error handling, and multiple sections"
-  - "Verify tests fail initially (function does not exist yet)"
+  - "Update selector in `I click on a category in the category filter` step definition"
+  - "Ensure test waits for category-menu to be visible"
+  - "Verify both assistant and MCP category filtering works"
 constraints:
-  - "Use Vitest as test framework"
-  - "Follow LobeChat testing conventions from .cursor/rules/testing-guide/testing-guide.mdc"
-  - "Tests must be specific and cover exact expected output structure"
-  - "Time constraint: 20-30 minutes"
+  - "Must not modify production UI components"
+  - "Must maintain backward compatibility with existing passing tests"
+  - "Time constraint: 15-30 minutes"
 acceptance_criteria:
-  - "BLOCKING: Test file exists at src/server/services/builder/pageSpecToBuilderContent.test.ts"
-  - "BLOCKING: Test 'should convert hero section to Builder block with correct structure' is written"
-  - "BLOCKING: Test 'should convert text section to Builder block with HTML content' is written"
-  - "BLOCKING: Test 'should throw error for unknown section type' is written"
-  - "BLOCKING: Test 'should convert multiple sections in correct order' is written"
-  - "BLOCKING: Running tests produces FAIL result (expected - TDD RED phase)"
+  - "BLOCKING: DISCOVER-INTERACT-002 test passes when run with `pnpm --filter @lobechat/e2e-tests test`"
+  - "BLOCKING: DISCOVER-INTERACT-008 test passes when run with `pnpm --filter @lobechat/e2e-tests test`"
+  - "All previously passing smoke tests continue to pass"
 deliverables:
-  - "src/server/services/builder/pageSpecToBuilderContent.test.ts"
+  - "e2e/src/steps/discover/interactions.steps.ts - updated selector on lines 52-54"
 risks:
-  - "Risk: Tests may not cover all edge cases. Mitigation: Follow test cases defined in PRD Section 3.3.1"
+  - "The category-menu selector may be too generic if multiple menus exist on page - use more specific parent selectors if needed"
 out_of_scope:
-  - "Implementation of pageSpecToBuilderContent function"
-  - "Integration tests"
-  - "E2E tests"
-estimated_minutes: 25
+  - "Adding new data-testid attributes to production code"
+  - "Modifying other test step definitions"
+estimated_minutes: 20
 dependencies: []
-phase: "foundation-tests"
+phase: "testing"
 status: pending
-created_date: "2025-11-27"
+created_date: "2025-12-10"
 testing_requirements:
-  test_type: "unit"
-  framework: "vitest"
+  coverage: "N/A - test infrastructure fix"
+  required_tests:
+    - "Run DISCOVER-INTERACT-002 and verify pass"
+    - "Run DISCOVER-INTERACT-008 and verify pass"
+    - "Run smoke suite to verify no regressions"
+  mocking_policy:
+    allowed: []
+    forbidden: []
   validation_commands:
-    - "bunx vitest run --silent='passed-only' 'pageSpecToBuilderContent.test.ts'"
-code_quality:
-  max_complexity: 5
-  max_function_length: 30
-  max_nesting: 2
+    - "pnpm --filter @lobechat/e2e-tests test -- --tags '@interactions'"
+    - "pnpm --filter @lobechat/e2e-tests test:smoke"

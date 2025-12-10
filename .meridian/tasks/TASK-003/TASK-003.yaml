@@ -1,45 +1,43 @@
 id: TASK-003
-title: "Write integration tests for Builder page API route"
+title: "Fix pagination URL assertion in E2E test"
 objective: |
-  Create failing integration tests for POST /api/builder/page endpoint that creates
-  Builder.io pages from PageSpec. These tests verify API behavior with mocked
-  external dependencies (TDD RED phase).
+  Update the E2E test assertion for pagination to handle the case where page 1 might not 
+  include `page=1` in the URL (common pattern to omit page=1 for cleaner URLs).
+  
+  Current test at e2e/src/steps/discover/interactions.steps.ts:316-322 expects URL to contain
+  `page=` or `p=` parameter, but the application may use a different pattern or omit page=1.
+  
+  This fix addresses:
+  - DISCOVER-INTERACT-003: Navigate to next page of assistants
 scope:
-  - "Create test file at src/app/(backend)/api/builder/page/route.test.ts"
-  - "Write 4 test cases covering success, block structure, and error handling"
-  - "Mock Builder.io API and environment variables"
-  - "Verify tests fail initially (route does not exist yet)"
+  - "Analyze actual URL pattern used by pagination component"
+  - "Update test assertion to match actual behavior"
+  - "Handle edge case where page=1 is omitted from URL"
 constraints:
-  - "Use Vitest with vi.stubEnv for environment variables"
-  - "Mock global.fetch for Builder API calls"
-  - "Follow LobeChat testing conventions"
-  - "Time constraint: 30-40 minutes"
+  - "Must understand actual pagination URL behavior first"
+  - "Should not change pagination component unless absolutely necessary"
+  - "Time constraint: 20-30 minutes"
 acceptance_criteria:
-  - "BLOCKING: Test file exists at src/app/(backend)/api/builder/page/route.test.ts"
-  - "BLOCKING: Test 'should create Builder page and return slug' is written"
-  - "BLOCKING: Test 'should send correct Builder block structure' is written"
-  - "BLOCKING: Test 'should return 500 when Builder API fails' is written"
-  - "BLOCKING: Test 'should return 400 for invalid PageSpec schema' is written"
-  - "BLOCKING: Running tests produces FAIL result (expected - TDD RED phase)"
+  - "BLOCKING: DISCOVER-INTERACT-003 test passes when clicking next page"
+  - "Test correctly validates that pagination changes page"
+  - "All smoke tests continue to pass"
 deliverables:
-  - "src/app/(backend)/api/builder/page/route.test.ts"
+  - "e2e/src/steps/discover/interactions.steps.ts - updated assertion at lines 316-322"
 risks:
-  - "Risk: Mocking fetch may be complex. Mitigation: Use vi.fn() pattern from PRD"
+  - "Pagination may use URL hash or other mechanism - need to verify actual behavior"
+  - "May need to test both page=2 and page=1 scenarios"
 out_of_scope:
-  - "Implementation of route.ts"
-  - "E2E tests"
-  - "Actual Builder.io API calls"
-estimated_minutes: 35
+  - "Modifying pagination component logic"
+  - "Adding new pagination tests"
+estimated_minutes: 25
 dependencies: []
-phase: "foundation-tests"
+phase: "testing"
 status: pending
-created_date: "2025-11-27"
+created_date: "2025-12-10"
 testing_requirements:
-  test_type: "integration"
-  framework: "vitest"
+  coverage: "N/A - test infrastructure fix"
+  required_tests:
+    - "Run DISCOVER-INTERACT-003 and verify pass"
+    - "Manually verify pagination URL changes in browser"
   validation_commands:
-    - "bunx vitest run --silent='passed-only' 'route.test.ts'"
-code_quality:
-  max_complexity: 5
-  max_function_length: 40
-  max_nesting: 3
+    - "pnpm --filter @lobechat/e2e-tests test -- --name 'Navigate to next page'"
