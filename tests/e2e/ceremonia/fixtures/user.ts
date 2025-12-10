@@ -5,7 +5,7 @@
 
 export const ceremoniaUser = {
   email: 'admin@ceremoniacircle.org',
-  password: 'test-password-123',
+  password: 'ceremonia_secure_password_123',
   role: 'user' as const,
   tenantId: 'ceremonia',
 };

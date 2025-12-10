@@ -17,13 +17,31 @@ export const Pages: CollectionConfig = {
   },
   access: {
     // Read access: Admin users can read all pages, non-admin users can only read pages from their tenants
+    // The multi-tenant plugin wraps this and adds tenant constraints when useTenantAccess is true
     read: ({ req: { user } }) => {
       if (!user) return false;
-      // Admin role can read all pages
+      // Admin role can read all pages (plugin's userHasAccessToAllTenants handles this)
       if (user.roles?.includes('admin')) return true;
-      // Non-admin users can only read pages from their tenants
-      // The multi-tenant plugin will automatically filter by tenant
-      return true;
+      // Non-admin users: return tenant constraint for cross-tenant isolation
+      // Get tenant IDs from user's tenants array
+      const tenantIds =
+        user.tenants?.map((t: any) => {
+          if (typeof t === 'object' && t !== null) {
+            const tenantValue = t.tenant;
+            if (typeof tenantValue === 'object' && tenantValue !== null) {
+              return tenantValue.id;
+            }
+            return tenantValue || t.id;
+          }
+          return t;
+        }) || [];
+
+      // Return a query constraint that filters by tenant
+      return {
+        tenant: {
+          in: tenantIds,
+        },
+      };
     },
     // Create access: Must be authenticated and have at least one tenant
     create: ({ req: { user } }) => {
@@ -36,18 +54,48 @@ export const Pages: CollectionConfig = {
       if (!user) return false;
       // Admin role can update all pages
       if (user.roles?.includes('admin')) return true;
-      // Non-admin users can only update pages from their tenants
-      // The multi-tenant plugin will automatically filter by tenant
-      return true;
+      // Non-admin users: return tenant constraint for cross-tenant isolation
+      const tenantIds =
+        user.tenants?.map((t: any) => {
+          if (typeof t === 'object' && t !== null) {
+            const tenantValue = t.tenant;
+            if (typeof tenantValue === 'object' && tenantValue !== null) {
+              return tenantValue.id;
+            }
+            return tenantValue || t.id;
+          }
+          return t;
+        }) || [];
+
+      return {
+        tenant: {
+          in: tenantIds,
+        },
+      };
     },
     // Delete access: Admin users can delete all pages, non-admin users can only delete their tenant's pages
     delete: ({ req: { user } }) => {
       if (!user) return false;
       // Admin role can delete all pages
       if (user.roles?.includes('admin')) return true;
-      // Non-admin users can only delete pages from their tenants
-      // The multi-tenant plugin will automatically filter by tenant
-      return true;
+      // Non-admin users: return tenant constraint for cross-tenant isolation
+      const tenantIds =
+        user.tenants?.map((t: any) => {
+          if (typeof t === 'object' && t !== null) {
+            const tenantValue = t.tenant;
+            if (typeof tenantValue === 'object' && tenantValue !== null) {
+              return tenantValue.id;
+            }
+            return tenantValue || t.id;
+          }
+          return t;
+        }) || [];
+
+      return {
+        tenant: {
+          in: tenantIds,
+        },
+      };
     },
   },
   fields: [
