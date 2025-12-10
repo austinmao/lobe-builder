@@ -1,42 +1,45 @@
 id: TASK-004
-title: "Fix MCP navigation and featured assistant E2E test assertions"
+title: "Verify preview route renders draft pages"
 objective: |
-  Fix the navigation assertion tests that are failing due to incorrect URL path expectations
-  or element interaction issues.
-  
-  This fix addresses:
-  - DISCOVER-INTERACT-011: Navigate from home to MCP list (URL assertion failed)
-  - DISCOVER-INTERACT-012: Click featured assistant from home (element interaction error)
+  Verify that the existing preview route (/preview/[tenantId]/[slug]) correctly
+  renders draft pages from Payload CMS. This validates the PageRenderer integration
+  with Payload data.
 scope:
-  - "Analyze actual navigation URLs for MCP section"
-  - "Update URL assertion in 'I should be navigated to' step"
-  - "Debug featured assistant card interaction"
+  - Navigate to /preview/ceremonia/test-page
+  - Verify page renders with correct content
+  - Verify Hero section displays
+  - Verify no 404 error for draft page
+  - Check for console errors
 constraints:
-  - "Must verify actual URL patterns used by application"
-  - "Time constraint: 30-45 minutes"
+  - Do NOT modify existing route code
+  - Test with the draft test page from TASK-003
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: DISCOVER-INTERACT-011 test passes when navigating to MCP list"
-  - "BLOCKING: DISCOVER-INTERACT-012 test passes when clicking featured assistant"
-  - "All smoke tests continue to pass"
+  - "BLOCKING: /preview/ceremonia/test-page returns HTTP 200"
+  - "BLOCKING: Hero section title renders correctly"
+  - "BLOCKING: Page uses Untitled UI design system components"
+  - "No JavaScript console errors"
 deliverables:
-  - "e2e/src/steps/discover/interactions.steps.ts - updated navigation assertions"
+  - Screenshot of rendered preview page
+  - Verification that PageRenderer works with Payload data
+  - List of any rendering issues found
 risks:
-  - "MCP section may use different URL structure than expected"
-  - "Featured assistant cards may have overlay elements blocking click"
+  - PageRenderer may not handle Payload section format
+  - Design system components may not match expected structure
 out_of_scope:
-  - "Modifying home page layout"
-  - "Adding new navigation tests"
-estimated_minutes: 35
-dependencies: ["TASK-001"]
-phase: "testing"
+  - Modifying PageRenderer component
+  - Testing published route (separate task)
+  - Mobile responsiveness testing (Phase 3)
+estimated_minutes: 30
+dependencies: ["TASK-003"]
+phase: "phase1-infrastructure"
 status: pending
 created_date: "2025-12-10"
 testing_requirements:
-  coverage: "N/A - test infrastructure fix"
+  coverage: "100% - route and render validation"
   required_tests:
-    - "Run DISCOVER-INTERACT-011 and verify pass"
-    - "Run DISCOVER-INTERACT-012 and verify pass"
-    - "Manually verify navigation URLs in browser"
+    - "Happy path: Draft page renders at preview route"
+    - "Content validation: Hero title matches Payload data"
+    - "Error path: Non-existent page returns 404"
   validation_commands:
-    - "pnpm --filter @lobechat/e2e-tests test -- --name 'Navigate from home'"
-    - "pnpm --filter @lobechat/e2e-tests test -- --name 'Click featured'"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase1-infrastructure.spec.ts --grep 'render draft page'"

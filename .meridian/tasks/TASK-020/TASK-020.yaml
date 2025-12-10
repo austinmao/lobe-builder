@@ -1,0 +1,39 @@
+id: TASK-020
+title: "Add custom domain in Vercel project settings"
+objective: |
+  Add live.ceremoniacircle.org as a custom domain in the Vercel project settings
+  and verify it's properly configured.
+scope:
+  - Add domain in Vercel dashboard
+  - Configure as production domain (not redirect)
+  - Verify domain shows as "Valid Configuration"
+  - Deploy with new domain
+constraints:
+  - Requires Vercel project access
+  - DNS must be configured first (or verification will fail)
+  - Time: 30 minutes max
+acceptance_criteria:
+  - "BLOCKING: Domain added in Vercel project"
+  - "BLOCKING: Domain status shows 'Valid Configuration'"
+  - "SSL certificate provisioning initiated"
+deliverables:
+  - Domain configured in Vercel
+  - Screenshot of Vercel domain settings
+risks:
+  - DNS not propagated yet
+  - SSL certificate may take time
+out_of_scope:
+  - Custom domain redirects
+  - Multiple domain aliases
+estimated_minutes: 30
+dependencies: ["TASK-019"]
+phase: "phase4-domain"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "Domain configuration validation"
+  required_tests:
+    - "Vercel shows valid configuration"
+    - "Domain responds to requests"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase4-domain.spec.ts --grep 'Vercel domain configuration'"

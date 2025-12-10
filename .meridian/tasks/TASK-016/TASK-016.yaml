@@ -1,49 +1,43 @@
 id: TASK-016
-title: "Create FeaturesSection component with icon support"
+title: "Verify mobile responsive layout"
 objective: |
-  Build FeaturesSection component for the page builder that displays a grid
-  of feature cards with icons, titles, and descriptions. Support flexible
-  grid layouts (2-4 columns based on item count).
+  Verify that the landing page is fully responsive and works correctly on
+  mobile devices (320px to 768px viewport widths).
 scope:
-  - "Create src/components/PageRenderer/sections/FeaturesSection.tsx"
-  - "Support heading prop for section title"
-  - "Support items array with icon, title, description per item"
-  - "Implement responsive grid (1 col mobile, 2 col tablet, 3-4 col desktop)"
-  - "Use Untitled UI icons or lucide-react for icon rendering"
+  - Test at 320px, 375px, 414px, 768px viewports
+  - Verify no horizontal scrolling
+  - Check all sections stack correctly
+  - Verify touch targets are adequate
 constraints:
-  - "Icons should be referenced by name string (not imported components)"
-  - "Must handle 2-8 feature items gracefully"
-  - "Must use theme CSS variables for colors"
-  - "Time limit: 35-45 minutes"
+  - Use browser DevTools or Playwright for testing
+  - Do not modify CSS (report issues only)
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: FeaturesSection renders grid of feature cards"
-  - "BLOCKING: Each card displays icon, title, and description"
-  - "BLOCKING: Grid is responsive (changes columns based on viewport)"
-  - "Icons render correctly from string name"
-  - "Works with 2, 3, 4, or 6 items"
+  - "BLOCKING: No horizontal scroll at 320px width"
+  - "BLOCKING: All content readable on mobile"
+  - "BLOCKING: CTA buttons have adequate touch target size"
+  - "Typography scales appropriately"
 deliverables:
-  - "src/components/PageRenderer/sections/FeaturesSection.tsx"
-  - "src/components/PageRenderer/sections/icons.ts (icon name mapping)"
-  - "Updated src/components/PageRenderer/sections/index.ts"
-testing_requirements:
-  coverage: "70%"
-  required_tests:
-    - "Happy path: Render with 3 feature items"
-    - "Happy path: Render with 6 feature items"
-    - "Edge cases: Invalid icon name falls back to default"
-    - "Edge cases: Empty items array renders nothing"
-  mocking_policy:
-    allowed: []
-    forbidden: []
-  validation_commands:
-    - "bunx vitest run --silent='passed-only' 'FeaturesSection'"
+  - Mobile responsiveness report
+  - Screenshots at each viewport size
+  - List of any issues found
 risks:
-  - "Risk: Icon name mismatch causing render failures. Mitigation: Add fallback icon and console warning."
+  - Some components may not be fully responsive
+  - Touch targets may be too small
 out_of_scope:
-  - "Custom icon upload"
-  - "Icon color customization"
-estimated_minutes: 40
+  - Fixing responsiveness issues
+  - Native app testing
+estimated_minutes: 30
 dependencies: ["TASK-015"]
-phase: component-system
+phase: "phase3-landing-page"
 status: pending
-created_date: "2025-11-29"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - viewport testing"
+  required_tests:
+    - "320px viewport: no horizontal scroll"
+    - "375px viewport: content readable"
+    - "768px viewport: layout correct"
+    - "Touch targets >= 44px"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase3-landing-page.spec.ts --grep 'mobile responsive'"

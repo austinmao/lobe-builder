@@ -1,0 +1,37 @@
+id: TASK-031
+title: "Create runbook for adding future tenants"
+objective: |
+  Create a technical runbook that documents how to add additional tenants
+  to the system in the future.
+scope:
+  - Document tenant creation steps
+  - Middleware configuration updates
+  - DNS requirements
+  - Vercel domain setup
+constraints:
+  - Technical audience (developers)
+  - Reusable for future tenants
+  - Time: 45 minutes max
+acceptance_criteria:
+  - "BLOCKING: Runbook document created"
+  - "BLOCKING: Covers all setup steps"
+  - "Includes checklist format"
+  - "Tested against current tenant setup"
+deliverables:
+  - Tenant runbook (Markdown)
+  - Checklist template
+  - Time estimates
+risks:
+  - Process may change over time
+out_of_scope:
+  - Automation scripts
+  - Self-service tenant creation
+estimated_minutes: 45
+dependencies: ["TASK-030"]
+phase: "phase5-documentation"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "N/A - documentation task"
+  required_tests: []
+  validation_commands: []

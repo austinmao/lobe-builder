@@ -1,49 +1,45 @@
 id: TASK-006
-title: "Implement BuilderRenderer component"
+title: "Verify cross-tenant isolation (security)"
 objective: |
-  Implement the BuilderRenderer React component that renders Builder.io pages
-  in an iframe. This is the GREEN phase - making the tests from TASK-002 pass.
+  Verify that the multi-tenant isolation is working correctly. A user from one
+  tenant should NOT be able to access pages from another tenant. This is a
+  critical security validation.
 scope:
-  - "Create src/features/Portal/Artifacts/Body/Renderer/Builder.tsx"
-  - "Parse JSON content to extract builderUrl"
-  - "Render iframe with correct src and styles"
-  - "Display error message for invalid content"
-  - "Run TASK-002 tests and verify they PASS"
+  - Attempt to access /preview/other-tenant/test-page (should fail)
+  - Attempt to access /page/other-tenant/test-page (should fail)
+  - Verify Ceremonia user cannot see other tenant's pages in API
+  - Document security model
 constraints:
-  - "Must pass all tests in Builder.test.tsx"
-  - "Use memo for performance optimization"
-  - "Use useMemo for JSON parsing"
-  - "Follow LobeChat component conventions"
-  - "Time constraint: 20-30 minutes"
+  - Do NOT create actual security vulnerabilities
+  - Test with non-existent tenant IDs
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: BuilderRenderer component exists at src/features/Portal/Artifacts/Body/Renderer/Builder.tsx"
-  - "BLOCKING: Component parses JSON content and extracts builderUrl"
-  - "BLOCKING: Component renders iframe with src={builderUrl}"
-  - "BLOCKING: Component renders iframe with styles: border none, 100% width, 100% height"
-  - "BLOCKING: Component displays 'Invalid Builder artifact' when JSON is invalid"
-  - "BLOCKING: Component displays error when builderUrl is missing or empty"
-  - "BLOCKING: All tests in Builder.test.tsx PASS"
+  - "BLOCKING: /preview/other-tenant/test-page returns 404 or 403"
+  - "BLOCKING: /page/other-tenant/test-page returns 404 or 403"
+  - "BLOCKING: API query with wrong tenantId returns no results"
+  - "Payload admin filters pages by user's tenantId"
 deliverables:
-  - "src/features/Portal/Artifacts/Body/Renderer/Builder.tsx"
+  - Security verification report
+  - List of isolation boundaries tested
+  - Recommendations for additional security testing
 risks:
-  - "Risk: Style specificity issues. Mitigation: Use inline styles as specified"
+  - Tenant isolation may have gaps
+  - API may not properly filter by tenantId
 out_of_scope:
-  - "Integration with Renderer/index.tsx"
-  - "E2E testing"
-estimated_minutes: 25
-dependencies: ["TASK-002"]
-phase: "phase-0-implementation"
+  - Penetration testing
+  - Authentication bypass testing
+  - Production security hardening
+estimated_minutes: 30
+dependencies: ["TASK-005"]
+phase: "phase1-infrastructure"
 status: pending
-created_date: "2025-11-27"
+created_date: "2025-12-10"
 testing_requirements:
-  coverage: "100%"
+  coverage: "100% - security boundary validation"
   required_tests:
-    - "Happy path: Valid JSON with builderUrl renders iframe"
-    - "Error paths: Invalid JSON, missing builderUrl, empty builderUrl"
+    - "Cross-tenant preview route blocked"
+    - "Cross-tenant published route blocked"
+    - "API cross-tenant query returns empty"
+    - "Direct URL guessing blocked"
   validation_commands:
-    - "bunx vitest run --silent='passed-only' 'Builder.test.tsx'"
-code_quality:
-  max_complexity: 5
-  max_function_length: 30
-  max_nesting: 2
-  no_magic_numbers: true
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase1-infrastructure.spec.ts --grep 'cross-tenant'"

@@ -1,30 +1,45 @@
 id: TASK-005
-title: "Add Builder artifact type to LobeChat types"
+title: "Verify published route filters by _status"
 objective: |
-  Add the new ArtifactType.Builder enum value to packages/types/src/artifact.ts.
-  This is a configuration task that enables the artifact system to recognize
-  Builder.io page artifacts.
+  Verify that the published route (/page/[tenantId]/[slug]) correctly filters
+  by _status field and only shows published pages. Draft pages should return 404
+  on the published route. Then publish the test page and verify it renders.
 scope:
-  - "Add 'Builder = application/lobe.artifacts.builder' to ArtifactType enum"
-  - "Verify existing artifact types are preserved"
-  - "Verify TypeScript compilation succeeds"
+  - Test /page/ceremonia/test-page returns 404 (page is draft)
+  - Publish test page via Payload API
+  - Verify /page/ceremonia/test-page returns 200 after publishing
+  - Verify content matches preview route
 constraints:
-  - "Do not modify existing enum values"
-  - "Follow existing code style in artifact.ts"
-  - "Time constraint: 10-15 minutes"
+  - Do NOT modify existing route code
+  - Use Payload API to publish (PATCH _status: published)
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: ArtifactType enum contains 'Builder = application/lobe.artifacts.builder'"
-  - "BLOCKING: Existing ArtifactType values (Code, Default, Python, React) are unchanged"
-  - "BLOCKING: TypeScript compilation succeeds without errors"
+  - "BLOCKING: Draft page returns 404 on /page/ceremonia/test-page"
+  - "BLOCKING: Published page returns 200 on /page/ceremonia/test-page"
+  - "BLOCKING: Published page content matches preview"
+  - "Page remains visible on preview route after publishing"
 deliverables:
-  - "packages/types/src/artifact.ts (modified)"
+  - Verification of draft → 404 behavior
+  - Verification of published → 200 behavior
+  - Screenshot of published page
 risks:
-  - "Risk: May conflict with existing exports. Mitigation: Check file structure first"
+  - Route may not correctly filter by _status
+  - Payload publish workflow may differ from expected
 out_of_scope:
-  - "Renderer implementation"
-  - "Tests for this change"
-estimated_minutes: 10
-dependencies: []
-phase: "phase-0-implementation"
+  - Unpublishing workflow
+  - Versioning/rollback functionality
+estimated_minutes: 30
+dependencies: ["TASK-003"]
+phase: "phase1-infrastructure"
 status: pending
-created_date: "2025-11-27"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - status filtering validation"
+  required_tests:
+    - "Draft page returns 404 on published route"
+    - "Publishing via API changes _status"
+    - "Published page returns 200 on published route"
+    - "Content identical between preview and published"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase1-infrastructure.spec.ts --grep 'draft page on published route'"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase1-infrastructure.spec.ts --grep 'published page after publishing'"

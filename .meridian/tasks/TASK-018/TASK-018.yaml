@@ -1,53 +1,43 @@
 id: TASK-018
-title: "Implement preview route /preview/[tenantId]/[slug]"
+title: "Verify page load performance (< 3 seconds)"
 objective: |
-  Create the preview route in the Next.js app that fetches page data from
-  Payload CMS and renders it using PageRenderer. Support draft pages
-  (includeUnpublished) for content preview during editing.
+  Verify that the landing page loads in under 3 seconds to meet the success
+  criteria defined in the PRD.
 scope:
-  - "Create src/app/preview/[tenantId]/[slug]/page.tsx"
-  - "Create src/libs/payload/client.ts for Payload API calls"
-  - "Fetch page from Payload with draft: true (include unpublished)"
-  - "Render using PageRenderer component"
-  - "Handle 404 case with PageNotFound component"
+  - Measure Time to First Contentful Paint (FCP)
+  - Measure Largest Contentful Paint (LCP)
+  - Identify any blocking resources
+  - Document performance metrics
 constraints:
-  - "Must use Next.js App Router (async Server Component)"
-  - "Must connect to Payload server on port 3011"
-  - "Must include unpublished drafts in query"
-  - "No authentication required for preview (addressed by tenantId + slug)"
-  - "Time limit: 40-50 minutes"
+  - Test on representative connection (4G simulation)
+  - Use Lighthouse or similar tool
+  - Time: 20 minutes max
 acceptance_criteria:
-  - "BLOCKING: Visiting /preview/acme-corp/landing renders the page"
-  - "BLOCKING: Draft pages (unpublished) are visible in preview"
-  - "BLOCKING: Non-existent page shows PageNotFound component"
-  - "Page renders all section types correctly"
-  - "No tenant cross-contamination (only specified tenant's page shown)"
+  - "BLOCKING: Page load time < 3 seconds"
+  - "BLOCKING: LCP < 2.5 seconds"
+  - "No render-blocking resources"
+  - "No excessive JavaScript bundle"
 deliverables:
-  - "src/app/preview/[tenantId]/[slug]/page.tsx"
-  - "src/app/preview/[tenantId]/[slug]/layout.tsx (with UntitledUIProviders)"
-  - "src/libs/payload/client.ts"
-  - "src/components/PageNotFound.tsx"
-testing_requirements:
-  coverage: "75%"
-  required_tests:
-    - "Happy path: Render existing published page"
-    - "Happy path: Render existing draft page"
-    - "Error paths: Non-existent page returns 404 component"
-    - "Error paths: Payload server unavailable returns error state"
-    - "Edge cases: Page with empty sections renders empty container"
-  mocking_policy:
-    allowed: ["Payload API calls"]
-    forbidden: []
-  validation_commands:
-    - "bunx vitest run --silent='passed-only' 'preview'"
-    - "bunx playwright test tests/e2e/preview"
+  - Performance report with metrics
+  - Lighthouse scores
+  - Optimization recommendations if needed
 risks:
-  - "Risk: Payload server not running causes route to fail. Mitigation: Add graceful error handling."
+  - Performance may vary by environment
+  - Network conditions affect results
 out_of_scope:
-  - "Published route /page/[tenantId]/[slug] (future task)"
-  - "Caching and ISR"
-estimated_minutes: 45
-dependencies: ["TASK-017", "TASK-012"]
-phase: component-system
+  - Performance optimization implementation
+  - CDN configuration
+  - Image optimization
+estimated_minutes: 20
+dependencies: ["TASK-017"]
+phase: "phase3-landing-page"
 status: pending
-created_date: "2025-11-29"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "Performance validation"
+  required_tests:
+    - "Page load < 3 seconds"
+    - "LCP < 2.5 seconds"
+    - "FCP < 1.8 seconds"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase3-landing-page.spec.ts --grep 'load in < 3 seconds'"

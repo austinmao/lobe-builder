@@ -1,0 +1,35 @@
+id: TASK-028
+title: "Document preview vs published routes"
+objective: |
+  Document the difference between preview and published routes so users
+  understand when to use each.
+scope:
+  - Explain /preview/ route (drafts visible)
+  - Explain /page/ route (published only)
+  - Explain custom domain mapping
+  - Include URL examples
+constraints:
+  - Technical but accessible
+  - Time: 20 minutes max
+acceptance_criteria:
+  - "BLOCKING: Route documentation created"
+  - "BLOCKING: Explains preview vs published"
+  - "Includes URL examples"
+deliverables:
+  - Route documentation (Markdown)
+  - URL reference table
+risks:
+  - Users may share preview URLs publicly
+out_of_scope:
+  - Authentication for preview
+estimated_minutes: 20
+dependencies: ["TASK-027"]
+phase: "phase5-documentation"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "N/A - documentation task"
+  required_tests:
+    - "Draft visible in preview, not in published"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase5-documentation.spec.ts --grep 'preview, not in published'"

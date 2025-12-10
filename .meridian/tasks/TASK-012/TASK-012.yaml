@@ -1,49 +1,42 @@
 id: TASK-012
-title: "Create Payload Users collection with tenant and role fields"
+title: "Verify middleware performance (< 10ms overhead)"
 objective: |
-  Create the Users collection in Payload CMS with authentication enabled,
-  tenantId field for multi-tenant association, and role field for admin/user
-  differentiation. This enables tenant-aware login to Payload admin.
+  Verify that the middleware execution time is under 10ms (P95) to ensure
+  no significant performance impact on page loads.
 scope:
-  - "Create src/collections/Users.ts with auth: true"
-  - "Add tenantId field with index for tenant association"
-  - "Add role field as select with 'user' and 'admin' options (default: 'user')"
-  - "Add email field as unique identifier (useAsTitle)"
-  - "Create initial admin user seed script"
+  - Measure middleware execution time
+  - Test with various path lengths
+  - Document performance characteristics
+  - Identify any bottlenecks
 constraints:
-  - "Must integrate with existing Clerk/NextAuth authentication (pass-through or sync)"
-  - "Role field must default to 'user' for new registrations"
-  - "Super admin user must be created during initial setup"
-  - "Time limit: 30-40 minutes"
+  - Measurement must be accurate (not affected by network)
+  - Test in conditions similar to production
+  - Time: 20 minutes max
 acceptance_criteria:
-  - "BLOCKING: Users collection appears in Payload admin"
-  - "BLOCKING: User can log in to Payload admin with email/password"
-  - "BLOCKING: Logged-in user's tenantId is used for tenant filtering"
-  - "Admin role user can see tenant selector and switch between tenants"
-  - "Non-admin user sees only their tenant in admin panel"
+  - "BLOCKING: Middleware P95 execution time < 10ms"
+  - "No memory leaks or growing resource usage"
+  - "Performance consistent across different paths"
 deliverables:
-  - "apps/payload/src/collections/Users.ts"
-  - "apps/payload/scripts/seed-admin.ts"
-  - "Updated apps/payload/payload.config.ts to include Users collection"
-testing_requirements:
-  coverage: "70%"
-  required_tests:
-    - "Happy path: Create user via API with tenantId"
-    - "Happy path: User login returns correct role and tenantId"
-    - "Error paths: Duplicate email registration fails"
-    - "Edge cases: User without role defaults to 'user'"
-  mocking_policy:
-    allowed: ["Password hashing", "Email sending"]
-    forbidden: ["Role assignment logic"]
-  validation_commands:
-    - "cd apps/payload && bunx vitest run --silent='passed-only' 'users'"
+  - Performance measurement results
+  - Benchmark script (optional)
+  - Optimization recommendations if needed
 risks:
-  - "Risk: Auth conflicts with existing Clerk auth. Mitigation: Keep Payload auth separate for CMS access only."
+  - Measurement may vary by environment
+  - Cold start may be slower
 out_of_scope:
-  - "SSO/OAuth integration"
-  - "User sync between Clerk and Payload"
-estimated_minutes: 35
+  - Full load testing
+  - Production monitoring setup
+  - CDN performance analysis
+estimated_minutes: 20
 dependencies: ["TASK-011"]
-phase: foundation
+phase: "phase2-middleware"
 status: pending
-created_date: "2025-11-29"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "Performance validation"
+  required_tests:
+    - "Middleware overhead < 10ms P95"
+    - "No memory leaks"
+    - "Consistent performance across paths"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase2-middleware.spec.ts --grep 'overhead'"

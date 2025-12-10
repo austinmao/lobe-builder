@@ -1,46 +1,45 @@
 id: TASK-002
-title: "Add data-testid to detail content wrapper components"
+title: "Create Ceremonia tenant user in Payload CMS"
 objective: |
-  Add `data-testid="detail-content"` attribute to the main content wrapper in discover detail pages.
-  The E2E tests at e2e/src/steps/discover/interactions.steps.ts expect this selector at lines 343, 378, 400, 438
-  but the actual components don't have it.
-  
-  This fix addresses 3 failing tests:
-  - DISCOVER-DETAIL-003: Load model detail content
-  - DISCOVER-INTERACT-006: Navigate to model detail page
-  - DISCOVER-INTERACT-007: Navigate to provider detail page
+  Create the first tenant user for Ceremonia in Payload CMS. This user will be
+  used to authenticate and create pages for the Ceremonia landing page system.
+  The user must have tenantId: "ceremonia" to ensure proper multi-tenant isolation.
 scope:
-  - "Add data-testid='detail-content' to assistant detail wrapper"
-  - "Add data-testid='detail-content' to model detail wrapper"
-  - "Add data-testid='detail-content' to provider detail wrapper"
-  - "Add data-testid='detail-content' to MCP detail wrapper"
+  - Create Payload user with email: admin@ceremoniacircle.org
+  - Set tenantId to "ceremonia"
+  - Set appropriate role (user or admin based on requirements)
+  - Verify user can login to Payload admin
+  - Verify user only sees ceremonia tenant data
 constraints:
-  - "Must add testid to appropriate wrapper element that contains main content"
-  - "Must not change visual appearance or layout"
-  - "Time constraint: 30-45 minutes"
+  - Use secure password (store in environment variables or secrets manager)
+  - Do NOT hardcode production credentials in code
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: DISCOVER-DETAIL-003 test passes when run with E2E test suite"
-  - "BLOCKING: DISCOVER-INTERACT-006 test passes when run with E2E test suite"
-  - "BLOCKING: DISCOVER-INTERACT-007 test passes when run with E2E test suite"
-  - "All previously passing detail page tests continue to pass"
+  - "BLOCKING: User exists with email admin@ceremoniacircle.org"
+  - "BLOCKING: User has tenantId: ceremonia"
+  - "BLOCKING: User can successfully login to Payload admin"
+  - "User only sees pages with tenantId: ceremonia (tenant isolation)"
 deliverables:
-  - "src/app/[variants]/(main)/discover/(detail)/assistant/features/Details/index.tsx - add data-testid"
-  - "src/app/[variants]/(main)/discover/(detail)/model/features/Details/index.tsx - add data-testid"
-  - "src/app/[variants]/(main)/discover/(detail)/provider/features/Details/index.tsx - add data-testid"
-  - "src/app/[variants]/(main)/discover/(detail)/mcp/features/Details/index.tsx - add data-testid"
+  - Ceremonia user created in Payload
+  - Login verification screenshot or log
+  - Credentials stored securely (document location)
 risks:
-  - "May need to locate the correct wrapper element in each detail component"
-  - "Components may have different structures requiring different placement"
+  - Password security - must use secure storage
+  - Tenant isolation may not be enforced if plugin misconfigured
 out_of_scope:
-  - "Modifying E2E test selectors"
-  - "Adding testids to other components"
-estimated_minutes: 35
-dependencies: []
-phase: "testing"
+  - Creating multiple users
+  - OAuth/SSO integration
+  - Production credentials (use test credentials for now)
+estimated_minutes: 30
+dependencies: ["TASK-001"]
+phase: "phase1-infrastructure"
 status: pending
 created_date: "2025-12-10"
-code_quality:
-  max_complexity: 10
-  max_function_length: 50
-  max_nesting: 3
-  no_magic_numbers: true
+testing_requirements:
+  coverage: "100% - user creation and verification"
+  required_tests:
+    - "Happy path: User creation succeeds"
+    - "Error path: Duplicate user rejected"
+    - "Security: User cannot access other tenant data"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase1-infrastructure.spec.ts --grep 'create Ceremonia tenant'"

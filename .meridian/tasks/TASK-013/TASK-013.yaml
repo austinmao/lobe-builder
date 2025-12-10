@@ -1,38 +1,44 @@
 id: TASK-013
-title: "Install Untitled UI dependencies and configure theme"
+title: "Create first landing page in Payload CMS"
 objective: |
-  Install Untitled UI React components and configure the theme CSS variables
-  for the landing page builder. Set up the required providers (RouterProvider,
-  ThemeProvider) for Next.js App Router compatibility.
+  Create the actual first landing page "Softening the Season: 3 Simple Skills
+  for Connection in the Chaos" in Payload CMS with the correct slug and
+  initial structure.
 scope:
-  - "Install @untitledui/icons, react-aria-components, tailwindcss-react-aria-components"
-  - "Install tailwind-merge, tailwindcss-animate, next-themes (if not already installed)"
-  - "Create src/styles/untitled-ui-theme.css with brand color variables"
-  - "Create src/providers/UntitledUIProviders.tsx with RouterProvider and ThemeProvider"
-  - "Add UntitledUIProviders to layout for /preview and /page routes"
+  - Create page with slug: softening-the-season-3-simple-skills-for-connection-in-the-chaos
+  - Set tenantId: ceremonia
+  - Set designSystem: untitledui
+  - Save as draft initially
+  - Verify accessible at preview route
 constraints:
-  - "Must use Tailwind CSS v4.x (already in project)"
-  - "Must not conflict with existing antd-style theming"
-  - "Theme must support dark mode via 'light-mode' and 'dark-mode' classes"
-  - "Time limit: 30-40 minutes"
+  - Use exact slug from PRD
+  - Content can be placeholder initially
+  - Time: 45 minutes max
 acceptance_criteria:
-  - "BLOCKING: Untitled UI icons import without errors"
-  - "BLOCKING: Theme CSS variables are loaded in /preview routes"
-  - "BLOCKING: Dark mode toggle switches theme correctly"
-  - "No console errors related to react-aria-components"
-  - "TypeScript compilation passes with Untitled UI imports"
+  - "BLOCKING: Page exists with exact slug from PRD"
+  - "BLOCKING: Page accessible at custom domain /lp/{slug}"
+  - "BLOCKING: Page has designSystem: untitledui"
+  - "Page saved as draft for content iteration"
 deliverables:
-  - "Updated package.json with Untitled UI dependencies"
-  - "src/styles/untitled-ui-theme.css"
-  - "src/providers/UntitledUIProviders.tsx"
-  - "Updated src/app/preview/layout.tsx (or new layout)"
+  - Landing page created in Payload CMS
+  - Page ID documented
+  - Preview URL verified working
 risks:
-  - "Risk: Tailwind CSS version incompatibility. Mitigation: Check Untitled UI requirements before installation."
+  - Slug length may cause issues
+  - Middleware may not handle long slugs
 out_of_scope:
-  - "Section components (covered in TASK-014, TASK-015, TASK-016)"
-  - "Shadcn UI integration (future task)"
-estimated_minutes: 35
-dependencies: ["TASK-009"]
-phase: component-system
+  - Final content population (TASK-014)
+  - Publishing (Phase 5)
+estimated_minutes: 45
+dependencies: ["TASK-012"]
+phase: "phase3-landing-page"
 status: pending
-created_date: "2025-11-29"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - page creation and access"
+  required_tests:
+    - "Page created with correct slug"
+    - "Page accessible via custom domain"
+    - "Page uses correct design system"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase3-landing-page.spec.ts --grep 'access first page'"

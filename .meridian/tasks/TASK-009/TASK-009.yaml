@@ -1,55 +1,51 @@
 id: TASK-009
-title: "Install and configure Payload CMS with PostgreSQL adapter"
+title: "Implement path blocking for non-allowed routes"
 objective: |
-  Set up Payload CMS as a separate server on port 3011, connecting to the existing
-  PostgreSQL database used by LobeChat's Drizzle ORM. Configure the postgres adapter
-  with table prefixing to avoid conflicts with existing tables.
+  Implement security logic that blocks access to non-allowed paths on custom
+  domains. Only paths in allowedPaths config should be accessible; all others
+  should return 404.
 scope:
-  - "Install payload, @payloadcms/db-postgres, @payloadcms/richtext-lexical packages"
-  - "Create payload.config.ts with PostgreSQL adapter pointing to DATABASE_URL"
-  - "Configure table prefix as 'payload_' to avoid conflicts with Drizzle tables"
-  - "Create apps/payload directory structure for the separate Payload server"
-  - "Add dev:payload script to package.json to run Payload on port 3011"
+  - Block all paths not in allowedPaths array
+  - Return 404 for blocked paths (not redirect)
+  - Specifically block /chat, /api, /admin on custom domains
+  - Log blocked requests for security monitoring
 constraints:
-  - "Must use same DATABASE_URL as LobeChat (no new database infrastructure)"
-  - "Must run as separate server on port 3011 (not embedded in Next.js)"
-  - "Must use pnpm for package management per project standards"
-  - "Time limit: 45-60 minutes"
+  - Use NextResponse.rewrite() to /404 page
+  - Must be explicit blocklist (deny by default)
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: Running 'bun run dev:payload' starts Payload admin on http://localhost:3011/admin"
-  - "BLOCKING: Payload connects to PostgreSQL without errors (verified in server logs)"
-  - "BLOCKING: Payload tables are prefixed with 'payload_' in database"
-  - "Payload admin login page renders correctly"
+  - "BLOCKING: /chat on custom domain returns 404"
+  - "BLOCKING: /api/* on custom domain returns 404"
+  - "BLOCKING: /admin on custom domain returns 404"
+  - "Blocked requests are logged"
 deliverables:
-  - "apps/payload/package.json"
-  - "apps/payload/payload.config.ts"
-  - "apps/payload/src/server.ts"
-  - "Updated root package.json with dev:payload script"
+  - Path blocking logic in middleware
+  - Security logging
+  - Deny-by-default implementation
 risks:
-  - "Risk: PostgreSQL connection pool conflicts with Drizzle. Mitigation: Use separate connection strings or pooling config."
+  - May accidentally block legitimate paths
+  - 404 page may not exist
 out_of_scope:
-  - "Payload collections (covered in TASK-010)"
-  - "Multi-tenant plugin (covered in TASK-011)"
-  - "User authentication (covered in TASK-012)"
-estimated_minutes: 50
-dependencies: []
-phase: foundation
-status: completed
-completed_at: "2025-11-30"
-created_date: "2025-11-29"
-session_notes: |
-  2025-11-30: Fixed Payload admin panel 404/500 errors by migrating from Express-only
-  to @payloadcms/next integration. Key fixes: (1) layout.tsx needs serverFunction with
-  handleServerFunctions and importMap props, (2) page.tsx needs importMap prop,
-  (3) next.config.mjs needs turbopack.root and outputFileTracingRoot set to monorepo root,
-  (4) Removed .js extensions from imports. Admin panel now returns HTTP 200 at
-  http://localhost:3011/admin. Documented in mem-0006 and mem-0007.
-
-  2025-11-30 (follow-up session): (5) Fixed REST_HEAD build error - removed REST_HEAD and
-  REST_OPTIONS exports from apps/payload/app/(payload)/api/[...slug]/route.ts as they don't
-  exist in @payloadcms/next@3.65.0. (6) Created and ran database migrations using
-  `pnpm payload migrate:create` then `yes | pnpm payload migrate:fresh --force-accept-data-loss`.
-  All Payload tables now created in PostgreSQL. (7) Fixed not-found.tsx TypeScript error -
-  added missing importMap prop. (8) Discovered multi-tenant bootstrap issue: create-first-user
-  requires selecting a tenant, but no tenants exist initially. Fixed by inserting seed tenant
-  directly into DB: `psql "$DATABASE_URL" -c "INSERT INTO tenants (name, slug, created_at, updated_at) VALUES ('Default Tenant', 'default', NOW(), NOW());"`. Admin panel fully functional.
+  - Custom error pages
+  - Rate limiting
+  - IP blocking
+estimated_minutes: 30
+dependencies: ["TASK-008"]
+phase: "phase2-middleware"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - security path validation"
+  required_tests:
+    - "/chat blocked on custom domain"
+    - "/api/* blocked on custom domain"
+    - "/admin blocked on custom domain"
+    - "Arbitrary paths blocked"
+    - "/lp/* allowed on custom domain"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase2-middleware.spec.ts --grep 'block non-allowed'"
+code_quality:
+  max_complexity: 10
+  max_function_length: 50
+  max_nesting: 3
+  no_magic_numbers: true

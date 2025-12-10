@@ -1,0 +1,39 @@
+id: TASK-019
+title: "Document DNS configuration for Ceremonia team"
+objective: |
+  Create clear documentation for DNS configuration that the Ceremonia team can
+  use to set up their CNAME record pointing to Vercel.
+scope:
+  - Document CNAME record requirements
+  - Provide exact values (live → cname.vercel-dns.com)
+  - Include verification commands
+  - Share with Ceremonia team
+constraints:
+  - DNS changes must be done by domain owner
+  - Documentation must be clear for non-technical users
+  - Time: 20 minutes max
+acceptance_criteria:
+  - "BLOCKING: DNS documentation created"
+  - "BLOCKING: Verification steps included"
+  - "Documentation shared with Ceremonia team"
+deliverables:
+  - DNS configuration guide (Markdown)
+  - Verification checklist
+risks:
+  - DNS propagation delay (up to 48 hours)
+  - Domain registrar UI may differ
+out_of_scope:
+  - Actually configuring DNS (Ceremonia team responsibility)
+  - Troubleshooting DNS issues
+estimated_minutes: 20
+dependencies: ["TASK-018"]
+phase: "phase4-domain"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "N/A - documentation task"
+  required_tests:
+    - "DNS resolves to Vercel"
+  validation_commands:
+    - "dig live.ceremoniacircle.org"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase4-domain.spec.ts --grep 'resolve DNS'"

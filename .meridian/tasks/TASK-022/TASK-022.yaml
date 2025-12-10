@@ -1,0 +1,39 @@
+id: TASK-022
+title: "Verify no mixed content warnings"
+objective: |
+  Verify that all resources on the page are loaded over HTTPS and there are
+  no mixed content warnings in the browser console.
+scope:
+  - Check browser console for mixed content warnings
+  - Verify all images, scripts, stylesheets are HTTPS
+  - Check any external resources
+  - Document any issues
+constraints:
+  - Use browser DevTools
+  - Test in Chrome/Firefox
+  - Time: 20 minutes max
+acceptance_criteria:
+  - "BLOCKING: No mixed content warnings in console"
+  - "BLOCKING: All resources loaded over HTTPS"
+  - "No insecure form actions"
+deliverables:
+  - Mixed content verification report
+  - List of any insecure resources (if any)
+risks:
+  - Third-party resources may be HTTP
+  - CMS-uploaded images may be HTTP
+out_of_scope:
+  - Fixing mixed content issues
+  - Third-party resource migration
+estimated_minutes: 20
+dependencies: ["TASK-021"]
+phase: "phase4-domain"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - security validation"
+  required_tests:
+    - "No mixed content warnings"
+    - "All resources HTTPS"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase4-domain.spec.ts --grep 'mixed content'"

@@ -1,50 +1,44 @@
 id: TASK-017
-title: "Create PageRenderer component with design system support"
+title: "Add SEO metadata (title, description, OG tags)"
 objective: |
-  Build the main PageRenderer component that maps Payload page data to
-  section components. Support multiple design systems (untitledui, shadcn)
-  via the designSystem field, with Untitled UI as the default.
+  Ensure the landing page has proper SEO metadata including title, description,
+  and Open Graph tags for social sharing.
 scope:
-  - "Create src/components/PageRenderer/index.tsx"
-  - "Map blockType to corresponding section component"
-  - "Support designSystem switching (untitledui implemented, shadcn placeholder)"
-  - "Handle unknown block types gracefully (console warning, skip render)"
-  - "Create DESIGN_SYSTEM_COMPONENTS mapping object"
+  - Verify title tag matches page title
+  - Add meta description
+  - Add Open Graph (og:) tags
+  - Add Twitter Card tags
 constraints:
-  - "Must default to 'untitledui' if designSystem field is missing"
-  - "Must not crash on unknown block types"
-  - "Shadcn components can be stubs for now (implemented in future phase)"
-  - "Time limit: 30-40 minutes"
+  - Metadata may come from Payload CMS or page component
+  - Follow SEO best practices
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: PageRenderer renders Payload page with hero, text, cta, features sections"
-  - "BLOCKING: Unknown blockType logs warning and skips render (no crash)"
-  - "BLOCKING: designSystem='untitledui' uses Untitled UI components"
-  - "designSystem='shadcn' renders placeholder (not crash)"
-  - "TypeScript types match Payload page schema"
+  - "BLOCKING: <title> tag contains page title"
+  - "BLOCKING: <meta name='description'> is present"
+  - "BLOCKING: og:title, og:description, og:image present"
+  - "twitter:card tag present"
 deliverables:
-  - "src/components/PageRenderer/index.tsx"
-  - "src/components/PageRenderer/types.ts"
-  - "Updated src/components/PageRenderer/sections/index.ts with all exports"
-testing_requirements:
-  coverage: "75%"
-  required_tests:
-    - "Happy path: Render page with mixed section types"
-    - "Happy path: Render with designSystem='untitledui'"
-    - "Error paths: Unknown blockType logs warning, doesn't crash"
-    - "Edge cases: Empty sections array renders empty page"
-    - "Edge cases: Missing designSystem defaults to untitledui"
-  mocking_policy:
-    allowed: ["Section components for unit tests"]
-    forbidden: []
-  validation_commands:
-    - "bunx vitest run --silent='passed-only' 'PageRenderer'"
+  - SEO metadata implemented
+  - Verification of all tags
+  - Social preview test (if possible)
 risks:
-  - "Risk: Type mismatch between Payload schema and PageRenderer props. Mitigation: Generate types from Payload config."
+  - PageRenderer may not include metadata
+  - OG image may need to be created
 out_of_scope:
-  - "Shadcn implementation (placeholder only)"
-  - "Server-side rendering optimization"
-estimated_minutes: 35
+  - Creating custom OG images
+  - Advanced schema.org markup
+  - Google Search Console setup
+estimated_minutes: 30
 dependencies: ["TASK-016"]
-phase: component-system
+phase: "phase3-landing-page"
 status: pending
-created_date: "2025-11-29"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - SEO metadata validation"
+  required_tests:
+    - "Title tag present and correct"
+    - "Description meta tag present"
+    - "OG tags present"
+    - "Twitter card tags present"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase3-landing-page.spec.ts --grep 'SEO metadata'"

@@ -1,0 +1,44 @@
+id: TASK-024
+title: "Verify production page renders correctly"
+objective: |
+  Final verification that the production page at the custom domain renders
+  correctly with all content, styling, and functionality working.
+scope:
+  - Navigate to full production URL
+  - Verify all sections render
+  - Check no console errors
+  - Test all interactive elements
+  - Cross-browser verification
+constraints:
+  - Test on actual production domain
+  - Test in multiple browsers
+  - Time: 20 minutes max
+acceptance_criteria:
+  - "BLOCKING: Full URL accessible and renders"
+  - "BLOCKING: All content matches CMS data"
+  - "BLOCKING: No JavaScript errors in console"
+  - "CTA buttons are clickable"
+deliverables:
+  - Production verification report
+  - Cross-browser test results
+  - Final sign-off checklist
+risks:
+  - Browser-specific issues
+  - Cache may show stale content
+out_of_scope:
+  - Performance optimization
+  - A/B testing setup
+estimated_minutes: 20
+dependencies: ["TASK-023"]
+phase: "phase4-domain"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - production validation"
+  required_tests:
+    - "Production URL accessible"
+    - "Content renders correctly"
+    - "No console errors"
+    - "Interactive elements work"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase4-domain.spec.ts --grep 'production page'"

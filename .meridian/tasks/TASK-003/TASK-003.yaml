@@ -1,43 +1,47 @@
 id: TASK-003
-title: "Fix pagination URL assertion in E2E test"
+title: "Create test page for Ceremonia via Payload API"
 objective: |
-  Update the E2E test assertion for pagination to handle the case where page 1 might not 
-  include `page=1` in the URL (common pattern to omit page=1 for cleaner URLs).
-  
-  Current test at e2e/src/steps/discover/interactions.steps.ts:316-322 expects URL to contain
-  `page=` or `p=` parameter, but the application may use a different pattern or omit page=1.
-  
-  This fix addresses:
-  - DISCOVER-INTERACT-003: Navigate to next page of assistants
+  Create a test page using the Payload CMS API to verify the page creation workflow.
+  This test page will be used to validate the preview and published routes before
+  creating the actual landing page.
 scope:
-  - "Analyze actual URL pattern used by pagination component"
-  - "Update test assertion to match actual behavior"
-  - "Handle edge case where page=1 is omitted from URL"
+  - Login as Ceremonia user via API
+  - Create test page with tenantId: ceremonia
+  - Include basic sections (Hero, Features)
+  - Save as draft (not published)
+  - Verify page appears in Payload admin
 constraints:
-  - "Must understand actual pagination URL behavior first"
-  - "Should not change pagination component unless absolutely necessary"
-  - "Time constraint: 20-30 minutes"
+  - Use Payload REST API or GraphQL API
+  - Page must be saved as draft initially
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: DISCOVER-INTERACT-003 test passes when clicking next page"
-  - "Test correctly validates that pagination changes page"
-  - "All smoke tests continue to pass"
+  - "BLOCKING: Page created via POST /api/payload/pages"
+  - "BLOCKING: Page has tenantId: ceremonia"
+  - "BLOCKING: Page has slug: test-page"
+  - "BLOCKING: Page has _status: draft"
+  - "Page visible in Payload admin for Ceremonia user"
 deliverables:
-  - "e2e/src/steps/discover/interactions.steps.ts - updated assertion at lines 316-322"
+  - Test page created in Payload CMS
+  - API request/response documented
+  - Page ID recorded for subsequent tasks
 risks:
-  - "Pagination may use URL hash or other mechanism - need to verify actual behavior"
-  - "May need to test both page=2 and page=1 scenarios"
+  - API endpoint path may differ from documentation
+  - Validation errors if schema doesn't match
 out_of_scope:
-  - "Modifying pagination component logic"
-  - "Adding new pagination tests"
-estimated_minutes: 25
-dependencies: []
-phase: "testing"
+  - Creating the actual "Softening the Season" page
+  - Publishing the test page (separate task)
+  - Complex section configurations
+estimated_minutes: 30
+dependencies: ["TASK-002"]
+phase: "phase1-infrastructure"
 status: pending
 created_date: "2025-12-10"
 testing_requirements:
-  coverage: "N/A - test infrastructure fix"
+  coverage: "100% - API and response validation"
   required_tests:
-    - "Run DISCOVER-INTERACT-003 and verify pass"
-    - "Manually verify pagination URL changes in browser"
+    - "Happy path: Page creation succeeds with valid data"
+    - "Error path: Missing tenantId rejected"
+    - "Error path: Duplicate slug rejected"
+    - "Edge case: Empty sections array allowed"
   validation_commands:
-    - "pnpm --filter @lobechat/e2e-tests test -- --name 'Navigate to next page'"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase1-infrastructure.spec.ts --grep 'create test page'"

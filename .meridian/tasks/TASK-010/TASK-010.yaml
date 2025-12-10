@@ -1,53 +1,48 @@
 id: TASK-010
-title: "Create Pages collection with Payload blocks schema"
+title: "Block /lp/* on main domain"
 objective: |
-  Define the Pages collection in Payload CMS with fields for tenantId, userId, slug,
-  title, designSystem, and sections (as blocks). Create block definitions for hero,
-  text, cta, and features section types.
+  Block the /lp/* path prefix on the main domain (lobe-builder.vercel.app).
+  This ensures that /lp/* URLs are only accessible via custom tenant domains,
+  not the main application domain.
 scope:
-  - "Create src/collections/Pages.ts with all required fields"
-  - "Create src/blocks/HeroBlock.ts with title, subtitle, ctaLabel, ctaHref, backgroundImage fields"
-  - "Create src/blocks/TextBlock.ts with heading, body fields"
-  - "Create src/blocks/CTABlock.ts with heading, description, primaryButton, secondaryButton fields"
-  - "Create src/blocks/FeaturesBlock.ts with heading, items array fields"
-  - "Add designSystem field as select with 'untitledui' and 'shadcn' options"
+  - Detect main domain (not in TENANT_DOMAINS)
+  - Block /lp/* paths on main domain with 404
+  - Ensure other main domain routes unaffected
+  - Log blocked requests
 constraints:
-  - "Must include tenantId and userId fields with index: true"
-  - "Slug must validate as lowercase alphanumeric with hyphens only"
-  - "designSystem defaults to 'untitledui' if not specified"
-  - "Time limit: 40-50 minutes"
+  - Must not affect any existing LobeChat routes
+  - Minimal overhead for non-/lp/* paths
+  - Time: 20 minutes max
 acceptance_criteria:
-  - "BLOCKING: Pages collection appears in Payload admin panel"
-  - "BLOCKING: Creating a page with hero block succeeds via Payload admin"
-  - "BLOCKING: tenantId and userId fields are indexed in database (verified via Drizzle studio or SQL)"
-  - "All four block types (hero, text, cta, features) are available in block editor"
-  - "designSystem field shows dropdown with 'untitledui' and 'shadcn' options"
+  - "BLOCKING: /lp/anything on main domain returns 404"
+  - "BLOCKING: /page/ceremonia/slug on main domain works"
+  - "BLOCKING: /preview/ceremonia/slug on main domain works"
+  - "All existing LobeChat routes unaffected"
 deliverables:
-  - "apps/payload/src/collections/Pages.ts"
-  - "apps/payload/src/blocks/HeroBlock.ts"
-  - "apps/payload/src/blocks/TextBlock.ts"
-  - "apps/payload/src/blocks/CTABlock.ts"
-  - "apps/payload/src/blocks/FeaturesBlock.ts"
-  - "apps/payload/src/blocks/index.ts"
-testing_requirements:
-  coverage: "70%"
-  required_tests:
-    - "Happy path: Create page with hero section via Payload API"
-    - "Error paths: Reject invalid slug formats (uppercase, special chars)"
-    - "Error paths: Reject page without required tenantId field"
-    - "Edge cases: Create page with all four block types"
-  mocking_policy:
-    allowed: ["Database connections"]
-    forbidden: ["Internal business logic"]
-  validation_commands:
-    - "cd apps/payload && bunx vitest run --silent='passed-only' 'collections'"
+  - Main domain path blocking logic
+  - Verification that existing routes work
 risks:
-  - "Risk: Block schema changes require migration. Mitigation: Design blocks to be extensible from the start."
+  - May accidentally block wanted paths
+  - Host detection may fail in some environments
 out_of_scope:
-  - "Access control (covered in TASK-011)"
-  - "Testimonials and Pricing blocks (future phase)"
-estimated_minutes: 45
+  - Blocking other paths on main domain
+  - Redirect logic
+estimated_minutes: 20
 dependencies: ["TASK-009"]
-phase: foundation
+phase: "phase2-middleware"
 status: pending
-created_date: "2025-11-29"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - main domain blocking"
+  required_tests:
+    - "/lp/* blocked on main domain"
+    - "/page/* allowed on main domain"
+    - "/preview/* allowed on main domain"
+    - "Other routes unaffected"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase2-middleware.spec.ts --grep 'block /lp/* paths on main'"
+code_quality:
+  max_complexity: 10
+  max_function_length: 50
+  max_nesting: 3
+  no_magic_numbers: true

@@ -1,0 +1,39 @@
+id: TASK-025
+title: "Create 'Adding New Landing Pages' user guide"
+objective: |
+  Create a user guide that explains how the Ceremonia team can add new landing
+  pages using the Payload CMS admin interface.
+scope:
+  - Step-by-step guide for creating pages
+  - Screenshots of Payload admin
+  - Explain slug conventions
+  - Explain section types
+constraints:
+  - Non-technical audience
+  - Focus on common workflows
+  - Time: 45 minutes max
+acceptance_criteria:
+  - "BLOCKING: User guide document created"
+  - "BLOCKING: Includes step-by-step screenshots"
+  - "BLOCKING: Explains all required fields"
+  - "User can follow guide to create page"
+deliverables:
+  - User guide (Markdown with images)
+  - Quick reference card
+risks:
+  - Payload UI may change
+  - Screenshots may become outdated
+out_of_scope:
+  - Video tutorial
+  - Advanced customization guide
+estimated_minutes: 45
+dependencies: ["TASK-024"]
+phase: "phase5-documentation"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "N/A - documentation task"
+  required_tests:
+    - "User can create page following guide"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase5-documentation.spec.ts --grep 'create new page'"

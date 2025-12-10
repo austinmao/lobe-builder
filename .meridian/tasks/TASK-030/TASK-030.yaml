@@ -1,0 +1,40 @@
+id: TASK-030
+title: "Conduct Ceremonia team training session"
+objective: |
+  Conduct a training session with the Ceremonia team to walk through the
+  entire page creation and publishing workflow.
+scope:
+  - Live walkthrough of Payload admin
+  - Create a test page together
+  - Practice editing workflow
+  - Q&A session
+constraints:
+  - Schedule with Ceremonia team
+  - Record session if possible
+  - Time: 60 minutes max
+acceptance_criteria:
+  - "BLOCKING: Training session conducted"
+  - "BLOCKING: Ceremonia team can create pages independently"
+  - "Q&A questions addressed"
+  - "Team confidence verified"
+deliverables:
+  - Training session completed
+  - Recording (if available)
+  - Follow-up support plan
+risks:
+  - Scheduling conflicts
+  - Technical issues during session
+out_of_scope:
+  - Ongoing support contract
+  - Advanced training
+estimated_minutes: 60
+dependencies: ["TASK-029"]
+phase: "phase5-documentation"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "N/A - training task"
+  required_tests:
+    - "Team can complete full CRUD workflow"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase5-documentation.spec.ts --grep 'full CRUD workflow'"

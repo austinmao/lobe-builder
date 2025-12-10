@@ -1,46 +1,43 @@
 id: TASK-001
-title: "Fix category filter E2E test selector mismatch"
+title: "Verify Payload CMS collections exist for pages"
 objective: |
-  Update E2E test step definitions to use the correct selector for category filtering.
-  The tests currently use `[data-testid="category-filter"]` but the actual component 
-  uses `[data-testid="category-menu"]` (see src/app/[variants]/(main)/discover/components/CategoryMenu.tsx:37).
-  
-  This fix addresses 2 failing tests:
-  - DISCOVER-INTERACT-002: Filter assistants by category
-  - DISCOVER-INTERACT-008: Filter MCP tools by category
+  Verify that the existing Payload CMS installation has the required collections
+  configured for the Ceremonia landing page system. This is the foundation task
+  that ensures the infrastructure is ready for tenant creation.
 scope:
-  - "Update selector in `I click on a category in the category filter` step definition"
-  - "Ensure test waits for category-menu to be visible"
-  - "Verify both assistant and MCP category filtering works"
+  - Verify 'pages' collection exists in Payload CMS
+  - Verify 'users' collection supports tenantId field
+  - Verify multi-tenant plugin is installed and configured
+  - Document any missing configurations
 constraints:
-  - "Must not modify production UI components"
-  - "Must maintain backward compatibility with existing passing tests"
-  - "Time constraint: 15-30 minutes"
+  - Do NOT modify existing Payload configurations
+  - Read-only verification task
+  - Time: 15 minutes max
 acceptance_criteria:
-  - "BLOCKING: DISCOVER-INTERACT-002 test passes when run with `pnpm --filter @lobechat/e2e-tests test`"
-  - "BLOCKING: DISCOVER-INTERACT-008 test passes when run with `pnpm --filter @lobechat/e2e-tests test`"
-  - "All previously passing smoke tests continue to pass"
+  - "BLOCKING: pages collection exists with slug, title, tenantId, sections fields"
+  - "BLOCKING: users collection has tenantId field"
+  - "BLOCKING: @payloadcms/plugin-multi-tenant is in package.json dependencies"
+  - "Payload admin accessible at /admin endpoint"
 deliverables:
-  - "e2e/src/steps/discover/interactions.steps.ts - updated selector on lines 52-54"
+  - Verification checklist (in TASK-001-context.md)
+  - List of any missing configurations
 risks:
-  - "The category-menu selector may be too generic if multiple menus exist on page - use more specific parent selectors if needed"
+  - Payload CMS may not be fully configured yet
+  - Multi-tenant plugin may need additional setup
 out_of_scope:
-  - "Adding new data-testid attributes to production code"
-  - "Modifying other test step definitions"
-estimated_minutes: 20
+  - Creating new collections
+  - Modifying Payload configuration
+  - Creating users or pages
+estimated_minutes: 15
 dependencies: []
-phase: "testing"
+phase: "phase1-infrastructure"
 status: pending
 created_date: "2025-12-10"
 testing_requirements:
-  coverage: "N/A - test infrastructure fix"
+  coverage: "N/A - verification task"
   required_tests:
-    - "Run DISCOVER-INTERACT-002 and verify pass"
-    - "Run DISCOVER-INTERACT-008 and verify pass"
-    - "Run smoke suite to verify no regressions"
-  mocking_policy:
-    allowed: []
-    forbidden: []
+    - "Verify pages collection schema"
+    - "Verify users collection schema"
+    - "Verify plugin configuration"
   validation_commands:
-    - "pnpm --filter @lobechat/e2e-tests test -- --tags '@interactions'"
-    - "pnpm --filter @lobechat/e2e-tests test:smoke"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase1-infrastructure.spec.ts --grep 'tenant infrastructure'"

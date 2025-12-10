@@ -1,50 +1,41 @@
 id: TASK-015
-title: "Create TextSection and CTASection components"
+title: "Verify Untitled UI design system renders correctly"
 objective: |
-  Build TextSection and CTASection components for the page builder using
-  Untitled UI design patterns. TextSection displays heading and rich text
-  body. CTASection displays a call-to-action block with primary and optional
-  secondary buttons.
+  Verify that the page is using Untitled UI design system components correctly
+  and the visual appearance matches the expected design system.
 scope:
-  - "Create src/components/PageRenderer/sections/TextSection.tsx"
-  - "Create src/components/PageRenderer/sections/CTASection.tsx"
-  - "TextSection supports heading and body (markdown or plain text)"
-  - "CTASection supports heading, description, primaryButton, secondaryButton"
-  - "Export both from sections/index.ts"
+  - Verify page uses Untitled UI component styles
+  - Check typography, colors, spacing
+  - Verify component structure in DOM
+  - Compare against design system documentation
 constraints:
-  - "Must use Untitled UI Button component for CTA buttons"
-  - "TextSection body should support basic markdown rendering"
-  - "Must be responsive components"
-  - "Time limit: 35-45 minutes"
+  - Visual verification only
+  - Do not modify components
+  - Time: 20 minutes max
 acceptance_criteria:
-  - "BLOCKING: TextSection renders heading and body text"
-  - "BLOCKING: CTASection renders with primary button"
-  - "BLOCKING: Secondary button renders only when secondaryButton prop provided"
-  - "Typography uses theme CSS variables"
-  - "Components are responsive on mobile"
+  - "BLOCKING: Page uses Untitled UI typography"
+  - "BLOCKING: Components match Untitled UI patterns"
+  - "No fallback to default styles"
+  - "Consistent with other Untitled UI pages"
 deliverables:
-  - "src/components/PageRenderer/sections/TextSection.tsx"
-  - "src/components/PageRenderer/sections/CTASection.tsx"
-  - "Updated src/components/PageRenderer/sections/index.ts"
-testing_requirements:
-  coverage: "70%"
-  required_tests:
-    - "Happy path: TextSection with heading and body"
-    - "Happy path: CTASection with primary and secondary buttons"
-    - "Edge cases: CTASection without secondary button"
-    - "Edge cases: TextSection with markdown content"
-  mocking_policy:
-    allowed: []
-    forbidden: []
-  validation_commands:
-    - "bunx vitest run --silent='passed-only' 'TextSection|CTASection'"
+  - Design system verification report
+  - Screenshots showing correct styling
 risks:
-  - "Risk: Markdown rendering security (XSS). Mitigation: Use sanitized markdown renderer."
+  - Design system may have variants
+  - CSS may override expected styles
 out_of_scope:
-  - "Rich text editor integration"
-  - "Custom markdown extensions"
-estimated_minutes: 40
+  - Creating new components
+  - Modifying design system
+estimated_minutes: 20
 dependencies: ["TASK-014"]
-phase: component-system
+phase: "phase3-landing-page"
 status: pending
-created_date: "2025-11-29"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "Visual validation"
+  required_tests:
+    - "Untitled UI classes present in DOM"
+    - "Typography matches design system"
+    - "Color scheme matches design system"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase3-landing-page.spec.ts --grep 'Untitled UI design system'"

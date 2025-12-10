@@ -1,43 +1,50 @@
 id: TASK-007
-title: "Integrate BuilderRenderer into Renderer/index.tsx"
+title: "Create src/middleware.ts with TENANT_DOMAINS config"
 objective: |
-  Register the Builder artifact type in the Renderer component's switch statement
-  so that Builder artifacts are routed to the BuilderRenderer component.
+  Create the Next.js middleware file that handles custom domain routing. This is
+  the core implementation that enables tenant-specific domains to map to the
+  unified Payload CMS backend.
 scope:
-  - "Add import for BuilderRenderer in src/features/Portal/Artifacts/Body/Renderer/index.tsx"
-  - "Add ArtifactType.Builder case to switch statement"
-  - "Return BuilderRenderer component for Builder type"
+  - Create src/middleware.ts file
+  - Define TENANT_DOMAINS configuration object
+  - Add ceremonia domain: live.ceremoniacircle.org
+  - Implement basic request interception
+  - Configure matcher to exclude API routes, static files
 constraints:
-  - "Must follow existing pattern in index.tsx switch statement"
-  - "Must import BuilderRenderer as lazy/dynamic if other renderers are lazy"
-  - "Time constraint: 15-20 minutes"
+  - Must not break existing LobeChat routes
+  - Middleware must be lightweight (< 10ms overhead)
+  - Time: 45 minutes max
 acceptance_criteria:
-  - "BLOCKING: BuilderRenderer imported in Renderer/index.tsx"
-  - "BLOCKING: ArtifactType.Builder case added to switch statement"
-  - "BLOCKING: BuilderRenderer rendered for Builder artifact type"
-  - "BLOCKING: TypeScript compilation passes"
-  - "BLOCKING: Existing renderer tests still pass"
+  - "BLOCKING: src/middleware.ts file exists"
+  - "BLOCKING: TENANT_DOMAINS contains live.ceremoniacircle.org mapping"
+  - "BLOCKING: Matcher excludes api, _next/static, _next/image, favicon.ico"
+  - "Middleware compiles without errors"
 deliverables:
-  - "Updated src/features/Portal/Artifacts/Body/Renderer/index.tsx"
+  - src/middleware.ts file
+  - TENANT_DOMAINS configuration
+  - Middleware config with matcher
 risks:
-  - "Risk: Import cycle. Mitigation: Use same import pattern as other renderers"
+  - May conflict with existing middleware (none expected)
+  - Matcher may be too broad or too narrow
 out_of_scope:
-  - "E2E testing"
-  - "Visual regression testing"
-estimated_minutes: 18
-dependencies: ["TASK-005", "TASK-006"]
-phase: "phase-0-implementation"
+  - URL rewriting logic (TASK-008)
+  - Path blocking logic (TASK-009)
+  - Performance optimization (TASK-012)
+estimated_minutes: 45
+dependencies: ["TASK-006"]
+phase: "phase2-middleware"
 status: pending
-created_date: "2025-11-27"
+created_date: "2025-12-10"
 testing_requirements:
-  coverage: "100%"
+  coverage: "80% - middleware creation and configuration"
   required_tests:
-    - "Renderer routes Builder type to BuilderRenderer"
+    - "Middleware file loads without errors"
+    - "TENANT_DOMAINS config is correct"
+    - "Matcher excludes expected paths"
   validation_commands:
-    - "bun run type-check"
-    - "bunx vitest run --silent='passed-only' 'Renderer'"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase2-middleware.spec.ts --grep 'rewrite custom domain'"
 code_quality:
-  max_complexity: 5
+  max_complexity: 10
   max_function_length: 50
   max_nesting: 3
   no_magic_numbers: true

@@ -1,0 +1,43 @@
+id: TASK-021
+title: "Verify SSL certificate is active"
+objective: |
+  Verify that Vercel has provisioned an SSL certificate for the custom domain
+  and HTTPS is working correctly.
+scope:
+  - Verify https:// URL works
+  - Check certificate validity
+  - Verify no SSL warnings
+  - Test certificate chain
+constraints:
+  - SSL provisioning may take up to 24 hours
+  - Certificate is managed by Vercel (Let's Encrypt)
+  - Time: 15 minutes max
+acceptance_criteria:
+  - "BLOCKING: https://live.ceremoniacircle.org returns 200"
+  - "BLOCKING: SSL certificate is valid (not expired)"
+  - "BLOCKING: No browser SSL warnings"
+  - "Certificate issued by Let's Encrypt"
+deliverables:
+  - SSL verification report
+  - Certificate details
+risks:
+  - Certificate provisioning delay
+  - DNS not fully propagated
+out_of_scope:
+  - Custom certificates
+  - Certificate pinning
+estimated_minutes: 15
+dependencies: ["TASK-020"]
+phase: "phase4-domain"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - SSL validation"
+  required_tests:
+    - "HTTPS returns 200"
+    - "Certificate valid"
+    - "No SSL warnings"
+  validation_commands:
+    - "curl -I https://live.ceremoniacircle.org"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase4-domain.spec.ts --grep 'HTTPS active'"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase4-domain.spec.ts --grep 'SSL certificate'"

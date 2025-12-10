@@ -1,0 +1,39 @@
+id: TASK-027
+title: "Create 'Publishing Workflow' guide"
+objective: |
+  Create a guide explaining the draft/published workflow and how to publish
+  and republish pages.
+scope:
+  - Explain draft vs published states
+  - Publishing workflow
+  - Preview before publish
+  - Republishing after edits
+constraints:
+  - Clear explanation of workflow
+  - Time: 30 minutes max
+acceptance_criteria:
+  - "BLOCKING: Publishing guide created"
+  - "BLOCKING: Explains draft vs published"
+  - "BLOCKING: Includes preview step"
+  - "Explains republish workflow"
+deliverables:
+  - Publishing guide (Markdown)
+  - Workflow diagram (optional)
+risks:
+  - User may skip preview step
+out_of_scope:
+  - Scheduling/delayed publish
+  - Approval workflows
+estimated_minutes: 30
+dependencies: ["TASK-026"]
+phase: "phase5-documentation"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "N/A - documentation task"
+  required_tests:
+    - "User can publish page"
+    - "User can republish after edits"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase5-documentation.spec.ts --grep 'publish page'"
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase5-documentation.spec.ts --grep 'republish after edits'"

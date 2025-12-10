@@ -1,0 +1,35 @@
+id: TASK-026
+title: "Create 'Editing Existing Pages' guide"
+objective: |
+  Create a user guide for editing existing landing pages in Payload CMS.
+scope:
+  - Finding and selecting pages
+  - Editing text content
+  - Modifying sections
+  - Saving changes
+constraints:
+  - Build on TASK-025 guide format
+  - Time: 30 minutes max
+acceptance_criteria:
+  - "BLOCKING: Edit guide document created"
+  - "Explains how to find existing pages"
+  - "Explains how to edit each section type"
+deliverables:
+  - Edit guide (Markdown)
+  - Screenshots of edit workflow
+risks:
+  - Complex edits may need additional documentation
+out_of_scope:
+  - Bulk editing
+  - Import/export
+estimated_minutes: 30
+dependencies: ["TASK-025"]
+phase: "phase5-documentation"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "N/A - documentation task"
+  required_tests:
+    - "User can edit page following guide"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase5-documentation.spec.ts --grep 'edit page'"

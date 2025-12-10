@@ -1,49 +1,43 @@
 id: TASK-014
-title: "Create HeroSection component with Untitled UI styling"
+title: "Add Hero section with content"
 objective: |
-  Build a standalone HeroSection component for the page builder using
-  Untitled UI design patterns. The component receives props from Payload
-  block data and renders a responsive hero section with title, subtitle,
-  and CTA button.
+  Populate the Hero, Features, and CTA sections with actual content for the
+  "Softening the Season" landing page.
 scope:
-  - "Create src/components/PageRenderer/sections/HeroSection.tsx"
-  - "Implement responsive layout (mobile-first)"
-  - "Support optional backgroundImage prop"
-  - "Use Untitled UI Button component for CTA"
-  - "Apply theme CSS variables for colors and typography"
+  - Add Hero section with title, subtitle, CTA button
+  - Add Features section with 3 feature items
+  - Add CTA section with registration prompt
+  - Use content from PRD specification
 constraints:
-  - "Must be a standalone component (no @lobehub/ui dependencies)"
-  - "Must use 'use client' directive for interactive elements"
-  - "Must accept props matching HeroBlock schema from Payload"
-  - "Time limit: 30-40 minutes"
+  - Follow exact section structure from PRD
+  - Use icons that exist in design system
+  - Time: 30 minutes max
 acceptance_criteria:
-  - "BLOCKING: HeroSection renders with title and subtitle"
-  - "BLOCKING: CTA button renders when ctaLabel prop is provided"
-  - "BLOCKING: Component is responsive (looks good on mobile and desktop)"
-  - "backgroundImage displays as background when provided"
-  - "Typography uses theme CSS variables (not hardcoded colors)"
+  - "BLOCKING: Hero section renders with correct title"
+  - "BLOCKING: Features section shows 3 items"
+  - "BLOCKING: CTA section has registration button"
+  - "All text matches PRD specification"
 deliverables:
-  - "src/components/PageRenderer/sections/HeroSection.tsx"
-  - "src/components/PageRenderer/sections/index.ts (export)"
-testing_requirements:
-  coverage: "75%"
-  required_tests:
-    - "Happy path: Render with all props (title, subtitle, ctaLabel, ctaHref)"
-    - "Happy path: Render with minimal props (title only)"
-    - "Edge cases: Render without CTA (ctaLabel undefined)"
-    - "Edge cases: Long title text wraps correctly"
-  mocking_policy:
-    allowed: []
-    forbidden: []
-  validation_commands:
-    - "bunx vitest run --silent='passed-only' 'HeroSection'"
+  - Complete page content in Payload
+  - Screenshot of rendered page
 risks:
-  - "Risk: Untitled UI Button API changes. Mitigation: Check documentation before implementation."
+  - Icon names may not match design system
+  - Section structure may differ
 out_of_scope:
-  - "Animation effects"
-  - "Video backgrounds"
-estimated_minutes: 35
+  - Images/media assets
+  - Form functionality
+  - Analytics tracking
+estimated_minutes: 30
 dependencies: ["TASK-013"]
-phase: component-system
+phase: "phase3-landing-page"
 status: pending
-created_date: "2025-11-29"
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "100% - content validation"
+  required_tests:
+    - "Hero title renders"
+    - "Features items render (count = 3)"
+    - "CTA button renders"
+    - "Content matches specification"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase3-landing-page.spec.ts --grep 'render complete content'"

@@ -1,0 +1,43 @@
+id: TASK-023
+title: "Run Lighthouse audit (target > 90 performance)"
+objective: |
+  Run a Lighthouse audit on the production page to verify performance meets
+  the target of > 90 performance score.
+scope:
+  - Run Lighthouse in Chrome DevTools or CLI
+  - Capture Performance, Accessibility, Best Practices, SEO scores
+  - Document any issues affecting scores
+  - Compare against PRD target (> 90)
+constraints:
+  - Run on production URL
+  - Use mobile simulation
+  - Time: 30 minutes max
+acceptance_criteria:
+  - "BLOCKING: Performance score > 90"
+  - "Accessibility score > 80"
+  - "Best Practices score > 90"
+  - "SEO score > 90"
+deliverables:
+  - Lighthouse report (HTML or JSON)
+  - Score summary
+  - Optimization recommendations
+risks:
+  - Scores may fluctuate between runs
+  - Third-party scripts may affect scores
+out_of_scope:
+  - Implementing optimizations
+  - Third-party script removal
+estimated_minutes: 30
+dependencies: ["TASK-022"]
+phase: "phase4-domain"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "Performance validation"
+  required_tests:
+    - "Performance > 90"
+    - "Accessibility > 80"
+    - "Best Practices > 90"
+    - "SEO > 90"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase4-domain.spec.ts --grep 'Lighthouse performance'"

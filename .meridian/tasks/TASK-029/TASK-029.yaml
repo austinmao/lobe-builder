@@ -1,0 +1,40 @@
+id: TASK-029
+title: "Create credentials and share securely"
+objective: |
+  Create secure credentials for the Ceremonia team and share them using a
+  secure method (not plain text email).
+scope:
+  - Create Ceremonia admin credentials
+  - Use 1Password, Bitwarden, or similar
+  - Share securely with Ceremonia team
+  - Document credential access
+constraints:
+  - Must use secure sharing method
+  - Password must meet complexity requirements
+  - Time: 20 minutes max
+acceptance_criteria:
+  - "BLOCKING: Credentials created securely"
+  - "BLOCKING: Credentials shared via secure method"
+  - "User can login with credentials"
+  - "Credential access documented"
+deliverables:
+  - Credentials created
+  - Secure share link
+  - Access confirmation
+risks:
+  - Credentials may be shared insecurely
+  - Password may be lost
+out_of_scope:
+  - SSO integration
+  - Password rotation policy
+estimated_minutes: 20
+dependencies: ["TASK-028"]
+phase: "phase5-documentation"
+status: pending
+created_date: "2025-12-10"
+testing_requirements:
+  coverage: "Security validation"
+  required_tests:
+    - "User can login with credentials"
+  validation_commands:
+    - "cd lobe-builder && npx playwright test tests/e2e/ceremonia/phase5-documentation.spec.ts --grep 'login with provided credentials'"
