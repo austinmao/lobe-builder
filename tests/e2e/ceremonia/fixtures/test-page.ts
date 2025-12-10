@@ -16,7 +16,7 @@ export const testPageData = {
     },
   ],
   slug: 'test-page',
-  tenantId: 'ceremonia',
+  tenant: 1, // Ceremonia tenant ID
   title: 'Test Page',
   userId: 'user_ceremonia_admin',
 };

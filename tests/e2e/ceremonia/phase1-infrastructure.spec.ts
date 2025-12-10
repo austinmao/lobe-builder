@@ -55,6 +55,28 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     expect(loginResponse.ok()).toBeTruthy();
     const { token } = await loginResponse.json();
 
+    // Check if page already exists (idempotent test)
+    const existingResponse = await request.get(
+      `/api/pages?where[slug][equals]=${testPageData.slug}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    const existingData = await existingResponse.json();
+
+    // If page exists, delete it first to ensure clean test
+    if (existingData.docs && existingData.docs.length > 0) {
+      const existingPage = existingData.docs[0];
+      await request.delete(`/api/pages/${existingPage.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+
     // Create test page
     const response = await request.post('/api/pages', {
       data: testPageData,
@@ -64,7 +86,9 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     });
 
     expect(response.status()).toBe(201);
-    const page = await response.json();
+    const result = await response.json();
+    // Payload returns { doc: {...}, message: "..." }
+    const page = result.doc;
     // Tenant is set via relationship, not tenantId field
     expect(page.tenant).toBeDefined();
     expect(page.slug).toBe('test-page');
@@ -80,7 +104,8 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     // Verify page renders
     expect(response?.status()).toBe(200);
 
-    await expect(page.locator('h1')).toContainText('Test Hero');
+    // Page renders both page title and hero title - check for hero content in hero section
+    await expect(page.getByRole('heading', { name: 'Test Hero' })).toBeVisible();
     await expect(page.locator('text=Test Subtitle')).toBeVisible();
     await expect(page.locator('text=Test CTA')).toBeVisible();
   });
@@ -134,7 +159,9 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     const response = await page.goto('/page/ceremonia/test-page');
     expect(response?.status()).toBe(200);
 
-    await expect(page.locator('h1')).toContainText('Test Hero');
+    // Page renderer uses h1 for page title and h2 for hero section title
+    await expect(page.getByRole('heading', { name: 'Test Page' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Test Hero' })).toBeVisible();
     await expect(page.locator('text=Test Subtitle')).toBeVisible();
   });
 
