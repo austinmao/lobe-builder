@@ -1,9 +1,9 @@
 version: "1.0"
 prd_source: "docs/product-requirements-v1.0.0-unified.md"
 generated_date: "2025-12-10"
-current_phase: "phase1-infrastructure"
-completed_phases: []
-next_phase: "phase2-middleware"
+current_phase: "phase2-middleware"
+completed_phases: ["phase1-infrastructure"]
+next_phase: "phase3-landing-page"
 
 # TDD Methodology
 # Each task is designed to make corresponding E2E tests pass.
@@ -81,11 +81,17 @@ tasks:
   - id: TASK-006
     title: "Verify cross-tenant isolation (security)"
     phase: phase1-infrastructure
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-005"]
     tests_to_pass:
       - "Test 1.6: should block cross-tenant page access"
+    completion_notes: |
+      - Updated Pages collection access control with explicit tenant constraints
+      - Non-admin users now get query constraints filtering by their tenant IDs
+      - Fixed E2E test API endpoints to use correct /api/* paths
+      - Updated Test 1.6 to verify tenant isolation via access control
+      - Cross-tenant isolation enforced at Payload API level
 
   # ============================================================
   # PHASE 2: Middleware Implementation (6 E2E tests to pass)
