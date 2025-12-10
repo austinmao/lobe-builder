@@ -24,7 +24,8 @@
       }
     ],
     "paths": {
-      "@payload-config": ["./payload.config.ts"]
+      "@payload-config": ["./payload.config.ts"],
+      "@/*": ["./src/*"]
     }
   },
   "exclude": ["node_modules", "dist", "tests", ".next"],
