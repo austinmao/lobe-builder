@@ -1,0 +1,49 @@
+id: TASK-014
+title: "Create HeroSection component with Untitled UI styling"
+objective: |
+  Build a standalone HeroSection component for the page builder using
+  Untitled UI design patterns. The component receives props from Payload
+  block data and renders a responsive hero section with title, subtitle,
+  and CTA button.
+scope:
+  - "Create src/components/PageRenderer/sections/HeroSection.tsx"
+  - "Implement responsive layout (mobile-first)"
+  - "Support optional backgroundImage prop"
+  - "Use Untitled UI Button component for CTA"
+  - "Apply theme CSS variables for colors and typography"
+constraints:
+  - "Must be a standalone component (no @lobehub/ui dependencies)"
+  - "Must use 'use client' directive for interactive elements"
+  - "Must accept props matching HeroBlock schema from Payload"
+  - "Time limit: 30-40 minutes"
+acceptance_criteria:
+  - "BLOCKING: HeroSection renders with title and subtitle"
+  - "BLOCKING: CTA button renders when ctaLabel prop is provided"
+  - "BLOCKING: Component is responsive (looks good on mobile and desktop)"
+  - "backgroundImage displays as background when provided"
+  - "Typography uses theme CSS variables (not hardcoded colors)"
+deliverables:
+  - "src/components/PageRenderer/sections/HeroSection.tsx"
+  - "src/components/PageRenderer/sections/index.ts (export)"
+testing_requirements:
+  coverage: "75%"
+  required_tests:
+    - "Happy path: Render with all props (title, subtitle, ctaLabel, ctaHref)"
+    - "Happy path: Render with minimal props (title only)"
+    - "Edge cases: Render without CTA (ctaLabel undefined)"
+    - "Edge cases: Long title text wraps correctly"
+  mocking_policy:
+    allowed: []
+    forbidden: []
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'HeroSection'"
+risks:
+  - "Risk: Untitled UI Button API changes. Mitigation: Check documentation before implementation."
+out_of_scope:
+  - "Animation effects"
+  - "Video backgrounds"
+estimated_minutes: 35
+dependencies: ["TASK-013"]
+phase: component-system
+status: pending
+created_date: "2025-11-29"

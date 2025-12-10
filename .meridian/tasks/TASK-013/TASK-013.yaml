@@ -1,0 +1,38 @@
+id: TASK-013
+title: "Install Untitled UI dependencies and configure theme"
+objective: |
+  Install Untitled UI React components and configure the theme CSS variables
+  for the landing page builder. Set up the required providers (RouterProvider,
+  ThemeProvider) for Next.js App Router compatibility.
+scope:
+  - "Install @untitledui/icons, react-aria-components, tailwindcss-react-aria-components"
+  - "Install tailwind-merge, tailwindcss-animate, next-themes (if not already installed)"
+  - "Create src/styles/untitled-ui-theme.css with brand color variables"
+  - "Create src/providers/UntitledUIProviders.tsx with RouterProvider and ThemeProvider"
+  - "Add UntitledUIProviders to layout for /preview and /page routes"
+constraints:
+  - "Must use Tailwind CSS v4.x (already in project)"
+  - "Must not conflict with existing antd-style theming"
+  - "Theme must support dark mode via 'light-mode' and 'dark-mode' classes"
+  - "Time limit: 30-40 minutes"
+acceptance_criteria:
+  - "BLOCKING: Untitled UI icons import without errors"
+  - "BLOCKING: Theme CSS variables are loaded in /preview routes"
+  - "BLOCKING: Dark mode toggle switches theme correctly"
+  - "No console errors related to react-aria-components"
+  - "TypeScript compilation passes with Untitled UI imports"
+deliverables:
+  - "Updated package.json with Untitled UI dependencies"
+  - "src/styles/untitled-ui-theme.css"
+  - "src/providers/UntitledUIProviders.tsx"
+  - "Updated src/app/preview/layout.tsx (or new layout)"
+risks:
+  - "Risk: Tailwind CSS version incompatibility. Mitigation: Check Untitled UI requirements before installation."
+out_of_scope:
+  - "Section components (covered in TASK-014, TASK-015, TASK-016)"
+  - "Shadcn UI integration (future task)"
+estimated_minutes: 35
+dependencies: ["TASK-009"]
+phase: component-system
+status: pending
+created_date: "2025-11-29"

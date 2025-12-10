@@ -24,6 +24,7 @@ describe('imageToBase64', () => {
       toDataURL: vi.fn().mockReturnValue('data:image/webp;base64,mockBase64Data'),
     } as unknown as HTMLCanvasElement;
 
+    // @ts-expect-error - Electron types add WebviewTag to createElement return, mock only needs HTMLCanvasElement
     vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas);
   });
 

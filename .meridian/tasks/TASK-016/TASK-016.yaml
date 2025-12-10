@@ -1,0 +1,49 @@
+id: TASK-016
+title: "Create FeaturesSection component with icon support"
+objective: |
+  Build FeaturesSection component for the page builder that displays a grid
+  of feature cards with icons, titles, and descriptions. Support flexible
+  grid layouts (2-4 columns based on item count).
+scope:
+  - "Create src/components/PageRenderer/sections/FeaturesSection.tsx"
+  - "Support heading prop for section title"
+  - "Support items array with icon, title, description per item"
+  - "Implement responsive grid (1 col mobile, 2 col tablet, 3-4 col desktop)"
+  - "Use Untitled UI icons or lucide-react for icon rendering"
+constraints:
+  - "Icons should be referenced by name string (not imported components)"
+  - "Must handle 2-8 feature items gracefully"
+  - "Must use theme CSS variables for colors"
+  - "Time limit: 35-45 minutes"
+acceptance_criteria:
+  - "BLOCKING: FeaturesSection renders grid of feature cards"
+  - "BLOCKING: Each card displays icon, title, and description"
+  - "BLOCKING: Grid is responsive (changes columns based on viewport)"
+  - "Icons render correctly from string name"
+  - "Works with 2, 3, 4, or 6 items"
+deliverables:
+  - "src/components/PageRenderer/sections/FeaturesSection.tsx"
+  - "src/components/PageRenderer/sections/icons.ts (icon name mapping)"
+  - "Updated src/components/PageRenderer/sections/index.ts"
+testing_requirements:
+  coverage: "70%"
+  required_tests:
+    - "Happy path: Render with 3 feature items"
+    - "Happy path: Render with 6 feature items"
+    - "Edge cases: Invalid icon name falls back to default"
+    - "Edge cases: Empty items array renders nothing"
+  mocking_policy:
+    allowed: []
+    forbidden: []
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'FeaturesSection'"
+risks:
+  - "Risk: Icon name mismatch causing render failures. Mitigation: Add fallback icon and console warning."
+out_of_scope:
+  - "Custom icon upload"
+  - "Icon color customization"
+estimated_minutes: 40
+dependencies: ["TASK-015"]
+phase: component-system
+status: pending
+created_date: "2025-11-29"

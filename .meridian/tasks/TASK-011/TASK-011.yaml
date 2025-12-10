@@ -1,0 +1,49 @@
+id: TASK-011
+title: "Configure Payload multi-tenant plugin with access control"
+objective: |
+  Install and configure @payloadcms/plugin-multi-tenant to enforce tenant isolation
+  on the Pages collection. Implement access control rules so tenants can only read,
+  update, and delete their own pages while admins can access all pages.
+scope:
+  - "Install @payloadcms/plugin-multi-tenant package"
+  - "Configure plugin in payload.config.ts with pages collection"
+  - "Implement read access control: filter by tenantId for non-admin users"
+  - "Implement create access control: require authenticated user"
+  - "Implement update/delete access control: tenant match or admin role"
+  - "Add tenant selector to admin panel"
+constraints:
+  - "Must use official @payloadcms/plugin-multi-tenant (not third-party)"
+  - "Admin role must bypass tenant filtering for all operations"
+  - "Time limit: 35-45 minutes"
+acceptance_criteria:
+  - "BLOCKING: Non-admin user logged in sees only pages with matching tenantId"
+  - "BLOCKING: Admin user sees all pages across all tenants"
+  - "BLOCKING: Creating a page auto-assigns tenantId from logged-in user"
+  - "API request to read another tenant's page returns 403 or empty results"
+  - "Tenant selector appears in admin panel header"
+deliverables:
+  - "Updated apps/payload/payload.config.ts with multi-tenant plugin"
+  - "Updated apps/payload/src/collections/Pages.ts with access control"
+testing_requirements:
+  coverage: "75%"
+  required_tests:
+    - "Happy path: User reads own tenant pages successfully"
+    - "Happy path: Admin reads all tenant pages successfully"
+    - "Error paths: User cannot read other tenant's pages"
+    - "Error paths: User cannot update other tenant's pages"
+    - "Edge cases: User with no tenantId cannot create pages"
+  mocking_policy:
+    allowed: ["Database connections", "Payload authentication"]
+    forbidden: ["Access control logic"]
+  validation_commands:
+    - "cd apps/payload && bunx vitest run --silent='passed-only' 'access-control'"
+risks:
+  - "Risk: Multi-tenant plugin has known login issues with non-super-admin users. Mitigation: Test thoroughly with different user roles."
+out_of_scope:
+  - "User collection and authentication (covered in TASK-012)"
+  - "Cross-tenant API endpoints"
+estimated_minutes: 40
+dependencies: ["TASK-010"]
+phase: foundation
+status: pending
+created_date: "2025-11-29"

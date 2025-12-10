@@ -92,42 +92,46 @@ tasks:
   - id: TASK-009
     title: "Install and configure Payload CMS with PostgreSQL adapter"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-009/"
     type: configuration
     phase: foundation
     estimated_minutes: 50
     dependencies: []
+    completed_at: "2025-11-29"
 
   - id: TASK-010
     title: "Create Pages collection with Payload blocks schema"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-010/"
     type: implementation
     phase: foundation
     estimated_minutes: 45
     dependencies: [TASK-009]
+    completed_at: "2025-11-29"
 
   - id: TASK-011
     title: "Configure Payload multi-tenant plugin with access control"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-011/"
     type: implementation
     phase: foundation
     estimated_minutes: 40
     dependencies: [TASK-010]
+    completed_at: "2025-11-29"
 
   - id: TASK-012
     title: "Create Payload Users collection with tenant and role fields"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-012/"
     type: implementation
     phase: foundation
     estimated_minutes: 35
     dependencies: [TASK-011]
+    completed_at: "2025-11-29"
 
   # ============================================================
   # PHASE 2: Component System (v1.1.1)
@@ -136,62 +140,68 @@ tasks:
   - id: TASK-013
     title: "Install Untitled UI dependencies and configure theme"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-013/"
     type: configuration
     phase: component-system
     estimated_minutes: 35
     dependencies: [TASK-009]
+    completed_at: "2025-11-29"
 
   - id: TASK-014
     title: "Create HeroSection component with Untitled UI styling"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-014/"
     type: implementation
     phase: component-system
     estimated_minutes: 35
     dependencies: [TASK-013]
+    completed_at: "2025-11-29"
 
   - id: TASK-015
     title: "Create TextSection and CTASection components"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-015/"
     type: implementation
     phase: component-system
     estimated_minutes: 40
     dependencies: [TASK-014]
+    completed_at: "2025-11-29"
 
   - id: TASK-016
     title: "Create FeaturesSection component with icon support"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-016/"
     type: implementation
     phase: component-system
     estimated_minutes: 40
     dependencies: [TASK-015]
+    completed_at: "2025-11-29"
 
   - id: TASK-017
     title: "Create PageRenderer component with design system support"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-017/"
     type: implementation
     phase: component-system
     estimated_minutes: 35
     dependencies: [TASK-016]
+    completed_at: "2025-11-29"
 
   - id: TASK-018
     title: "Implement preview route /preview/[tenantId]/[slug]"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-018/"
     type: implementation
     phase: component-system
     estimated_minutes: 45
     dependencies: [TASK-017, TASK-012]
+    completed_at: "2025-11-29"
 
   # ============================================================
   # PHASE 5: Builder.io Removal (v1.2.0) - Technical Debt Cleanup
@@ -200,12 +210,13 @@ tasks:
   - id: TASK-019
     title: "Remove Builder.io source files and directories"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-019/"
     type: cleanup
     phase: builder-removal
     estimated_minutes: 20
     dependencies: [TASK-018]
+    completed_at: "2025-11-29"
     description: |
       Delete all Builder.io related files:
       - src/libs/builder/ (entire directory)
@@ -218,12 +229,13 @@ tasks:
   - id: TASK-020
     title: "Remove Builder.io dependencies from package.json"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-020/"
     type: cleanup
     phase: builder-removal
     estimated_minutes: 15
     dependencies: [TASK-019]
+    completed_at: "2025-11-29"
     description: |
       - Remove @builder.io/sdk-react-nextjs
       - Remove @builder.io/sdk (if present)
@@ -233,12 +245,13 @@ tasks:
   - id: TASK-021
     title: "Remove Builder.io environment variables and artifact types"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-021/"
     type: cleanup
     phase: builder-removal
     estimated_minutes: 15
     dependencies: [TASK-020]
+    completed_at: "2025-11-29"
     description: |
       - Remove BUILDER_API_KEY from all env files
       - Remove BUILDER_ORG_ID from all env files
@@ -248,12 +261,13 @@ tasks:
   - id: TASK-022
     title: "Verify Builder.io removal and run full test suite"
     priority: P1
-    status: pending
+    status: completed
     path: ".meridian/tasks/TASK-022/"
     type: verification
     phase: builder-removal
     estimated_minutes: 30
     dependencies: [TASK-021]
+    completed_at: "2025-11-29"
     description: |
       Verification checklist:
       - rg -i "builder" shows no code references
@@ -267,13 +281,13 @@ tasks:
 summary:
   total_tasks: 22
   phase_0_tasks: 8  # Builder.io (completed)
-  phase_1_tasks: 4  # Payload Foundation
-  phase_2_tasks: 6  # Component System
-  phase_5_tasks: 4  # Builder.io Removal
-  completed_tasks: 8
-  pending_tasks: 14
-  completion_percentage: 36
-  estimated_remaining_minutes: 405  # 325 + 80 (removal tasks)
+  phase_1_tasks: 4  # Payload Foundation (completed)
+  phase_2_tasks: 6  # Component System (completed)
+  phase_5_tasks: 4  # Builder.io Removal (completed)
+  completed_tasks: 22
+  pending_tasks: 0
+  completion_percentage: 100
+  estimated_remaining_minutes: 0
 
 phases:
   - name: "Phase 0: Builder.io (v1.0.0)"
@@ -281,24 +295,27 @@ phases:
     tasks: [TASK-001, TASK-002, TASK-003, TASK-004, TASK-005, TASK-006, TASK-007, TASK-008]
 
   - name: "Phase 1: Payload CMS Foundation"
-    status: pending
+    status: completed
     tasks: [TASK-009, TASK-010, TASK-011, TASK-012]
     estimated_minutes: 170
     parallelizable: false
+    completed_at: "2025-11-29"
 
   - name: "Phase 2: Component System"
-    status: pending
+    status: completed
     tasks: [TASK-013, TASK-014, TASK-015, TASK-016, TASK-017, TASK-018]
     estimated_minutes: 230
     parallelizable: false
-    note: "TASK-013 can start in parallel with TASK-009"
+    note: "TASK-013 ran in parallel with TASK-009"
+    completed_at: "2025-11-29"
 
   - name: "Phase 5: Builder.io Removal (v1.2.0)"
-    status: pending
+    status: completed
     tasks: [TASK-019, TASK-020, TASK-021, TASK-022]
     estimated_minutes: 80
     parallelizable: false
-    note: "Must complete after all Payload functionality is verified"
+    completed_at: "2025-11-29"
+    note: "Builder.io fully removed - files, deps, env vars, and artifact types"
 
 execution_order:
   parallel_groups:

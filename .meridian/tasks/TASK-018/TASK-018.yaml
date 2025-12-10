@@ -1,0 +1,53 @@
+id: TASK-018
+title: "Implement preview route /preview/[tenantId]/[slug]"
+objective: |
+  Create the preview route in the Next.js app that fetches page data from
+  Payload CMS and renders it using PageRenderer. Support draft pages
+  (includeUnpublished) for content preview during editing.
+scope:
+  - "Create src/app/preview/[tenantId]/[slug]/page.tsx"
+  - "Create src/libs/payload/client.ts for Payload API calls"
+  - "Fetch page from Payload with draft: true (include unpublished)"
+  - "Render using PageRenderer component"
+  - "Handle 404 case with PageNotFound component"
+constraints:
+  - "Must use Next.js App Router (async Server Component)"
+  - "Must connect to Payload server on port 3011"
+  - "Must include unpublished drafts in query"
+  - "No authentication required for preview (addressed by tenantId + slug)"
+  - "Time limit: 40-50 minutes"
+acceptance_criteria:
+  - "BLOCKING: Visiting /preview/acme-corp/landing renders the page"
+  - "BLOCKING: Draft pages (unpublished) are visible in preview"
+  - "BLOCKING: Non-existent page shows PageNotFound component"
+  - "Page renders all section types correctly"
+  - "No tenant cross-contamination (only specified tenant's page shown)"
+deliverables:
+  - "src/app/preview/[tenantId]/[slug]/page.tsx"
+  - "src/app/preview/[tenantId]/[slug]/layout.tsx (with UntitledUIProviders)"
+  - "src/libs/payload/client.ts"
+  - "src/components/PageNotFound.tsx"
+testing_requirements:
+  coverage: "75%"
+  required_tests:
+    - "Happy path: Render existing published page"
+    - "Happy path: Render existing draft page"
+    - "Error paths: Non-existent page returns 404 component"
+    - "Error paths: Payload server unavailable returns error state"
+    - "Edge cases: Page with empty sections renders empty container"
+  mocking_policy:
+    allowed: ["Payload API calls"]
+    forbidden: []
+  validation_commands:
+    - "bunx vitest run --silent='passed-only' 'preview'"
+    - "bunx playwright test tests/e2e/preview"
+risks:
+  - "Risk: Payload server not running causes route to fail. Mitigation: Add graceful error handling."
+out_of_scope:
+  - "Published route /page/[tenantId]/[slug] (future task)"
+  - "Caching and ISR"
+estimated_minutes: 45
+dependencies: ["TASK-017", "TASK-012"]
+phase: component-system
+status: pending
+created_date: "2025-11-29"
