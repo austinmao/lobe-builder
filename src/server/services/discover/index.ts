@@ -136,9 +136,6 @@ export class DiscoverService {
 
     try {
       // Call cloud gateway with user access token in Authorization header
-      // TODO: callCloudGateway method is not yet available in @lobehub/market-sdk
-      // This feature was added in anticipation of SDK update. Remove @ts-expect-error when SDK is updated.
-      // @ts-expect-error callCloudGateway is planned but not yet in current market-sdk version
       const result = await this.market.plugins.callCloudGateway(
         {
           apiParams: params.apiParams,
