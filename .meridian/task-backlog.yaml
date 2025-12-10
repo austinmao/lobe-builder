@@ -31,20 +31,33 @@ tasks:
   - id: TASK-002
     title: "Create Ceremonia tenant user in Payload CMS"
     phase: phase1-infrastructure
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-001"]
     tests_to_pass:
       - "Test 1.1: should create Ceremonia tenant in Payload CMS"
+    completion_notes: |
+      - Created Supabase project: lobe-builder-payload (ref: ptcnbnnqrpdqtwxwdlga)
+      - Configured pooler URL: aws-1-us-west-1.pooler.supabase.com:6543
+      - Ran Payload migrations successfully
+      - Created Ceremonia tenant (ID: 1, slug: ceremonia)
+      - Created admin user: admin@ceremoniacircle.org (role: user)
+      - Verified login via API - JWT token returned successfully
 
   - id: TASK-003
     title: "Create test page for Ceremonia via Payload API"
     phase: phase1-infrastructure
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-002"]
     tests_to_pass:
       - "Test 1.2: should create test page for Ceremonia tenant"
+    completion_notes: |
+      - Test page created via POST /api/pages (Page ID: 2)
+      - Slug: test-page, Tenant ID: 1 (Ceremonia)
+      - Contains Hero and Features sections
+      - Fixed multi-tenant bug in Tenants.ts (populated relationship handling)
+      - E2E test uses /api/payload/* but actual endpoints are /api/*
 
   - id: TASK-004
     title: "Verify preview route renders draft pages"

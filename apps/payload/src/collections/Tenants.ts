@@ -23,8 +23,12 @@ export const Tenants: CollectionConfig = {
           in:
             user.tenants?.map((t: any) => {
               if (typeof t === 'object' && t !== null) {
-                // Handle both {tenant: 'id'} and {id: 'id'} structures
-                return t.tenant || t.id;
+                // Handle populated tenant relationships: t.tenant might be an object or an ID
+                const tenantValue = t.tenant;
+                if (typeof tenantValue === 'object' && tenantValue !== null) {
+                  return tenantValue.id;
+                }
+                return tenantValue || t.id;
               }
               return t;
             }) || [],

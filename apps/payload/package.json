@@ -9,6 +9,7 @@
     "dev": "next dev -p 3011",
     "generate:types": "payload generate:types",
     "seed:admin": "tsx scripts/seed-admin.ts",
+    "seed:ceremonia": "tsx scripts/seed-ceremonia.ts",
     "start": "next start -p 3011",
     "test": "vitest"
   },
