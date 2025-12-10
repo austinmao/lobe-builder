@@ -62,7 +62,7 @@ tasks:
   - id: TASK-004
     title: "Verify preview route renders draft pages"
     phase: phase1-infrastructure
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-003"]
     tests_to_pass:
@@ -71,7 +71,7 @@ tasks:
   - id: TASK-005
     title: "Verify published route filters by _status"
     phase: phase1-infrastructure
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-003"]
     tests_to_pass:
