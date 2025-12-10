@@ -23,6 +23,43 @@ const logDefault = debug('middleware:default');
 const logNextAuth = debug('middleware:next-auth');
 const logClerk = debug('middleware:clerk');
 const logBetterAuth = debug('middleware:better-auth');
+const logTenant = debug('middleware:tenant');
+
+/**
+ * TENANT_DOMAINS Configuration
+ *
+ * Maps custom domain hostnames to their corresponding tenant identifiers.
+ * Used for Ceremonia and other tenant landing pages.
+ *
+ * @see TASK-007: Create middleware with TENANT_DOMAINS config
+ */
+const TENANT_DOMAINS: Record<string, string> = {
+  'live.ceremoniacircle.org': 'ceremonia',
+};
+
+/**
+ * ALLOWED_PATHS Configuration
+ *
+ * Paths allowed on custom tenant domains (deny by default for security).
+ *
+ * @see TASK-009: Implement path blocking for non-allowed routes
+ */
+const TENANT_ALLOWED_PATHS = ['/', '/lp'];
+
+/**
+ * Enable x-tenant-id header for debugging (disabled in production)
+ */
+const ENABLE_TENANT_HEADER = process.env.NODE_ENV !== 'production';
+
+/**
+ * Adds x-tenant-id header to response for debugging
+ */
+function addTenantHeader(response: NextResponse, tenantId: string): NextResponse {
+  if (ENABLE_TENANT_HEADER) {
+    response.headers.set('x-tenant-id', tenantId);
+  }
+  return response;
+}
 
 // OIDC session pre-sync constant
 const OIDC_SESSION_HEADER = 'x-oidc-session-sync';
@@ -55,6 +92,12 @@ export const config = {
     '/next-auth/(.*)',
     '/oauth(.*)',
     '/oidc(.*)',
+
+    // Tenant landing page routes (Ceremonia)
+    '/lp',
+    '/lp/(.*)',
+    '/page/(.*)',
+    '/preview/(.*)',
   ],
 };
 
@@ -62,7 +105,68 @@ const backendApiEndpoints = ['/api', '/trpc', '/webapi', '/oidc'];
 
 const defaultMiddleware = (request: NextRequest) => {
   const url = new URL(request.url);
+  const hostname = request.headers.get('host') || '';
+  const pathname = url.pathname;
   logDefault('Processing request: %s %s', request.method, request.url);
+
+  // ============================================================
+  // TENANT DOMAIN HANDLING (Ceremonia Landing Pages)
+  // @see TASK-007 through TASK-012
+  // ============================================================
+  const tenantId = TENANT_DOMAINS[hostname];
+
+  if (tenantId) {
+    // Custom domain detected
+    logTenant('Custom domain detected: %O', { hostname, pathname, tenantId });
+
+    // SECURITY: Check if path is allowed on custom domain (deny by default)
+    const isPathAllowed = TENANT_ALLOWED_PATHS.some((allowedPath) => {
+      if (allowedPath === '/' && pathname === '/') return true;
+      if (allowedPath !== '/' && pathname.startsWith(allowedPath)) return true;
+      return false;
+    });
+
+    if (!isPathAllowed) {
+      logTenant('BLOCKED: %O', { hostname, pathname, reason: 'Path not in allowlist' });
+      return addTenantHeader(new NextResponse('Not Found', { status: 404 }), tenantId);
+    }
+
+    // Handle root path -> /page/{tenantId}/home
+    if (pathname === '/') {
+      const rewriteUrl = new URL(`/page/${tenantId}/home`, request.url);
+      logTenant('Root path rewrite: %O', { from: pathname, to: rewriteUrl.pathname });
+      return addTenantHeader(NextResponse.rewrite(rewriteUrl), tenantId);
+    }
+
+    // Handle /lp/{slug} -> /page/{tenantId}/{slug}
+    if (pathname.startsWith('/lp/')) {
+      const slug = pathname.slice(4); // Remove '/lp/' prefix
+      const rewriteUrl = new URL(`/page/${tenantId}${slug}`, request.url);
+      logTenant('URL rewrite: %O', { from: pathname, slug, tenantId, to: rewriteUrl.pathname });
+      return addTenantHeader(NextResponse.rewrite(rewriteUrl), tenantId);
+    }
+
+    // Handle /lp without trailing path -> /page/{tenantId}/home
+    if (pathname === '/lp') {
+      const rewriteUrl = new URL(`/page/${tenantId}/home`, request.url);
+      logTenant('/lp rewrite: %O', { from: pathname, to: rewriteUrl.pathname });
+      return addTenantHeader(NextResponse.rewrite(rewriteUrl), tenantId);
+    }
+  }
+
+  // SECURITY: Block /lp/* paths on main domain (only accessible via custom domains)
+  if (!tenantId && pathname.startsWith('/lp')) {
+    logTenant('BLOCKED (main domain): %O', {
+      hostname,
+      pathname,
+      reason: '/lp/* paths only accessible via custom domains',
+    });
+    return new NextResponse('Not Found', { status: 404 });
+  }
+
+  // ============================================================
+  // ORIGINAL LOBECHAT MIDDLEWARE LOGIC
+  // ============================================================
 
   // skip all api requests
   if (backendApiEndpoints.some((path) => url.pathname.startsWith(path))) {

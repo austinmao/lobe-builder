@@ -1,9 +1,9 @@
 version: "1.0"
 prd_source: "docs/product-requirements-v1.0.0-unified.md"
 generated_date: "2025-12-10"
-current_phase: "phase2-middleware"
-completed_phases: ["phase1-infrastructure"]
-next_phase: "phase3-landing-page"
+current_phase: "phase3-landing-page"
+completed_phases: ["phase1-infrastructure", "phase2-middleware"]
+next_phase: "phase4-domain"
 
 # TDD Methodology
 # Each task is designed to make corresponding E2E tests pass.
@@ -100,7 +100,7 @@ tasks:
   - id: TASK-007
     title: "Create src/middleware.ts with TENANT_DOMAINS config"
     phase: phase2-middleware
-    status: pending
+    status: completed
     estimated_minutes: 45
     dependencies: ["TASK-006"]
     tests_to_pass:
@@ -109,7 +109,7 @@ tasks:
   - id: TASK-008
     title: "Implement URL rewriting for custom domain paths"
     phase: phase2-middleware
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-007"]
     tests_to_pass:
@@ -118,7 +118,7 @@ tasks:
   - id: TASK-009
     title: "Implement path blocking for non-allowed routes"
     phase: phase2-middleware
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-008"]
     tests_to_pass:
@@ -127,7 +127,7 @@ tasks:
   - id: TASK-010
     title: "Block /lp/* on main domain"
     phase: phase2-middleware
-    status: pending
+    status: completed
     estimated_minutes: 20
     dependencies: ["TASK-009"]
     tests_to_pass:
@@ -136,7 +136,7 @@ tasks:
   - id: TASK-011
     title: "Add x-tenant-id header for debugging"
     phase: phase2-middleware
-    status: pending
+    status: completed
     estimated_minutes: 15
     dependencies: ["TASK-010"]
     tests_to_pass:
@@ -145,7 +145,7 @@ tasks:
   - id: TASK-012
     title: "Verify middleware performance (< 10ms overhead)"
     phase: phase2-middleware
-    status: pending
+    status: completed
     estimated_minutes: 20
     dependencies: ["TASK-011"]
     tests_to_pass:
