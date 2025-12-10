@@ -27,6 +27,7 @@
   "sideEffects": false,
   "workspaces": [
     "packages/*",
+    "apps/*",
     "e2e"
   ],
   "scripts": {
@@ -53,6 +54,7 @@
     "dev": "next dev -p 3010",
     "dev:desktop": "next dev -p 3015",
     "dev:mobile": "next dev -p 3018",
+    "dev:payload": "pnpm --filter @lobechat/payload dev",
     "docs:i18n": "lobe-i18n md && npm run lint:md && npm run lint:mdx && prettier -c --write locales/**/*",
     "docs:seo": "lobe-seo && npm run lint:mdx",
     "e2e": "cd e2e && npm run test:smoke",

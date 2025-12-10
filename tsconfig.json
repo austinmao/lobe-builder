@@ -35,6 +35,7 @@
     "public/sw.js",
     "apps/desktop",
     "apps/mobile",
+    "apps/payload",
     "tmp",
     "temp",
     ".temp",

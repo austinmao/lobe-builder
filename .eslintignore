@@ -46,3 +46,6 @@ docs/.local
 
 # MCP tools
 /.serena/**
+
+# Payload CMS - separate app with own linting rules
+apps/payload
