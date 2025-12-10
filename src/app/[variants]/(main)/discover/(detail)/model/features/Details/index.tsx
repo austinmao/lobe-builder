@@ -21,7 +21,7 @@ const Details = memo<{ mobile?: boolean }>(({ mobile: isMobile }) => {
   });
 
   return (
-    <Flexbox gap={24}>
+    <Flexbox data-testid="detail-content" gap={24}>
       <Nav activeTab={activeTab as ModelNavKey} mobile={mobile} setActiveTab={setActiveTab} />
       <Flexbox
         gap={48}
