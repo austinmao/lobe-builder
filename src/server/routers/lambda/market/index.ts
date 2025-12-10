@@ -4,6 +4,7 @@ import { serialize } from 'cookie';
 import debug from 'debug';
 import { z } from 'zod';
 
+import { ToolCallContent } from '@/libs/mcp';
 import { authedProcedure, publicProcedure, router } from '@/libs/trpc/lambda';
 import { serverDatabase } from '@/libs/trpc/lambda/middleware';
 import { DiscoverService } from '@/server/services/discover';
@@ -85,12 +86,15 @@ export const marketRouter = router({
         // Process content blocks (upload images, etc.)
         const newContent =
           cloudResult?.isError || !ctx.fileService
-            ? cloudResult?.content
-            : await processContentBlocks(cloudResult?.content, ctx.fileService);
+            ? (cloudResult?.content as ToolCallContent[])
+            : await processContentBlocks(
+                cloudResult?.content as ToolCallContent[],
+                ctx.fileService,
+              );
 
         // Convert content blocks to string
         const content = contentBlocksToString(newContent);
-        const state = { ...cloudResult, content: newContent };
+        const state = { ...cloudResult, content: newContent as ToolCallContent[] };
 
         if (cloudResult?.isError) {
           return { content, state, success: true };

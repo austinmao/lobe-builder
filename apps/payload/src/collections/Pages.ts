@@ -8,6 +8,9 @@ export const Pages: CollectionConfig = {
     singular: 'Page',
     plural: 'Pages',
   },
+  versions: {
+    drafts: true,
+  },
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'slug', 'designSystem', 'updatedAt'],
