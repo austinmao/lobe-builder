@@ -4,9 +4,11 @@
  * Fetches all verified tenant domains from the database with caching.
  * Returns a map of domain -> tenantSlug for middleware routing.
  *
+ * NOTE: This module runs in Edge middleware, so it must not import Node.js-only
+ * libraries like pino. Use console.log/warn/error for logging.
+ *
  * @packageDocumentation
  */
-import { pino } from '@/libs/logger';
 
 /**
  * Cache configuration
@@ -56,24 +58,10 @@ function isCacheValid(cache: DomainCache | null): boolean {
  * @returns Map of domain -> tenantSlug
  */
 async function fetchDomainsFromDatabase(): Promise<Record<string, string>> {
-  try {
-    // Fetch all tenants with verified domains
-    // Note: This would ideally use a dedicated repository method
-    // For now, we'll return empty and log a warning
-    // In production, add a `findAllVerifiedDomains()` method to TenantRepository
-
-    pino.warn(
-      'TenantRepository.findAllVerifiedDomains() not implemented - returning empty domain map',
-    );
-
-    // TODO: Implement TenantRepository.findAllVerifiedDomains() to query:
-    // SELECT slug, domain FROM payload_tenants WHERE domainStatus = 'verified' AND domain IS NOT NULL
-
-    return {};
-  } catch (error) {
-    pino.error({ error }, 'Failed to fetch tenant domains from database');
-    return {};
-  }
+  // NOTE: Database integration not implemented yet - using fallback domains only
+  // TODO: Implement TenantRepository.findAllVerifiedDomains() to query:
+  // SELECT slug, domain FROM payload_tenants WHERE domainStatus = 'verified' AND domain IS NOT NULL
+  return {};
 }
 
 /**
@@ -98,11 +86,8 @@ async function fetchDomainsFromDatabase(): Promise<Record<string, string>> {
 export async function getTenantDomains(): Promise<Record<string, string>> {
   // Check cache first
   if (isCacheValid(domainCache)) {
-    pino.trace('Serving tenant domains from cache');
     return domainCache!.data;
   }
-
-  pino.debug('Cache miss or expired - fetching tenant domains from database');
 
   // Fetch from database
   const domains = await fetchDomainsFromDatabase();
@@ -112,8 +97,6 @@ export async function getTenantDomains(): Promise<Record<string, string>> {
     data: domains,
     timestamp: Date.now(),
   };
-
-  pino.info({ domainCount: Object.keys(domains).length }, 'Tenant domains cache updated');
 
   return domains;
 }
@@ -132,5 +115,4 @@ export async function getTenantDomains(): Promise<Record<string, string>> {
  */
 export function invalidateDomainCache(): void {
   domainCache = null;
-  pino.debug('Tenant domains cache invalidated');
 }
