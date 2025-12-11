@@ -174,6 +174,22 @@ export interface Tenant {
    * Optional custom domain for this tenant
    */
   domain?: string | null;
+  /**
+   * Status of custom domain verification
+   */
+  domainStatus?: ('pending_verification' | 'verified') | null;
+  /**
+   * DNS records needed for domain verification
+   */
+  domainVerificationRecords?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -260,6 +276,16 @@ export interface Page {
         blockType: 'features';
       }
   )[];
+  meta?: {
+    /**
+     * Brief description for search engines (recommended: 150-160 characters)
+     */
+    description?: string | null;
+    /**
+     * Image for Open Graph and Twitter Cards (recommended: 1200x630px)
+     */
+    image?: (number | null) | Media;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -402,6 +428,8 @@ export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   domain?: T;
+  domainStatus?: T;
+  domainVerificationRecords?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -472,6 +500,12 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+      };
+  meta?:
+    | T
+    | {
+        description?: T;
+        image?: T;
       };
   updatedAt?: T;
   createdAt?: T;

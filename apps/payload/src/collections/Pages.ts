@@ -172,5 +172,31 @@ export const Pages: CollectionConfig = {
         description: 'Add and arrange sections for this page',
       },
     },
+    // SEO Fields
+    {
+      name: 'meta',
+      type: 'group',
+      label: 'SEO & Social Sharing',
+      fields: [
+        {
+          name: 'description',
+          type: 'textarea',
+          label: 'Meta Description',
+          maxLength: 160,
+          admin: {
+            description: 'Brief description for search engines (recommended: 150-160 characters)',
+          },
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Social Sharing Image',
+          admin: {
+            description: 'Image for Open Graph and Twitter Cards (recommended: 1200x630px)',
+          },
+        },
+      ],
+    },
   ],
 };

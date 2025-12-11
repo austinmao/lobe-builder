@@ -12,32 +12,35 @@ interface HeroSectionProps {
   block: HeroBlock;
 }
 
+/**
+ * Untitled UI Hero Section
+ *
+ * Design tokens:
+ * - Typography: text-5xl/text-6xl for title (display size)
+ * - Colors: Neutral grays, white backgrounds
+ * - Spacing: py-24 (96px vertical padding)
+ * - Buttons: Rounded-lg, shadow-sm, primary colors
+ */
 export function HeroSection({ block }: HeroSectionProps) {
   const { title, subtitle, ctaLabel, ctaHref } = block;
 
   return (
-    <section className="hero-section" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-        <h1 style={{ fontSize: '3rem', fontWeight: 'bold', marginBottom: '1rem' }}>{title}</h1>
-        {subtitle && (
-          <p style={{ fontSize: '1.25rem', color: '#666', marginBottom: '2rem' }}>{subtitle}</p>
-        )}
-        {ctaLabel && ctaHref && (
-          <a
-            href={ctaHref}
-            style={{
-              display: 'inline-block',
-              padding: '0.75rem 1.5rem',
-              backgroundColor: '#000',
-              color: '#fff',
-              textDecoration: 'none',
-              borderRadius: '0.5rem',
-              fontWeight: '500',
-            }}
-          >
-            {ctaLabel}
-          </a>
-        )}
+    <section className="relative bg-white py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h1 className="text-5xl font-bold tracking-tight text-gray-900 sm:text-6xl">{title}</h1>
+          {subtitle && <p className="mt-6 text-lg leading-8 text-gray-600">{subtitle}</p>}
+          {ctaLabel && ctaHref && (
+            <div className="mt-10 flex items-center justify-center gap-x-6">
+              <a
+                href={ctaHref}
+                className="rounded-lg bg-gray-900 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 transition-colors"
+              >
+                {ctaLabel}
+              </a>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

@@ -1,0 +1,34 @@
+{
+  "id": "20251211_100000_add_tenant_domain_fields",
+  "prevId": "20251210_230623_add_page_seo_fields",
+  "statements": [
+    {
+      "sql": "DO $$ BEGIN\n  CREATE TYPE \"public\".\"enum_tenants_domain_status\" AS ENUM('pending_verification', 'verified');\nEXCEPTION\n  WHEN duplicate_object THEN null;\nEND $$;",
+      "meta": {
+        "schemas": {},
+        "tables": {},
+        "columns": {}
+      }
+    },
+    {
+      "sql": "ALTER TABLE \"tenants\" ADD COLUMN IF NOT EXISTS \"domain_status\" \"enum_tenants_domain_status\";",
+      "meta": {
+        "schemas": {},
+        "tables": {},
+        "columns": {
+          "tenants": ["domain_status"]
+        }
+      }
+    },
+    {
+      "sql": "ALTER TABLE \"tenants\" ADD COLUMN IF NOT EXISTS \"domain_verification_records\" jsonb;",
+      "meta": {
+        "schemas": {},
+        "tables": {},
+        "columns": {
+          "tenants": ["domain_verification_records"]
+        }
+      }
+    }
+  ]
+}

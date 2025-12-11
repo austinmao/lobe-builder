@@ -11,10 +11,13 @@ export const Tenants: CollectionConfig = {
     defaultColumns: ['name', 'slug', 'domain', 'updatedAt'],
   },
   access: {
-    // Admin users can manage all tenants
-    // Non-admin users will have restricted access (configured by plugin)
+    // Tenant read is public for service-to-service calls (routing, domain resolution)
+    // Tenant data (name, slug, domain) is not sensitive
+    // For authenticated users, restrict to their own tenants unless admin
     read: ({ req: { user } }) => {
-      if (!user) return false;
+      // Allow public read access for service-to-service calls
+      // This enables the main app to query tenant info for routing
+      if (!user) return true;
       // Admin role can read all tenants
       if (user.roles?.includes('admin')) return true;
       // Non-admin users can only read their own tenants
@@ -85,6 +88,24 @@ export const Tenants: CollectionConfig = {
       label: 'Domain',
       admin: {
         description: 'Optional custom domain for this tenant',
+      },
+    },
+    {
+      name: 'domainStatus',
+      type: 'select',
+      options: [
+        { label: 'Pending Verification', value: 'pending_verification' },
+        { label: 'Verified', value: 'verified' },
+      ],
+      admin: {
+        description: 'Status of custom domain verification',
+      },
+    },
+    {
+      name: 'domainVerificationRecords',
+      type: 'json',
+      admin: {
+        description: 'DNS records needed for domain verification',
       },
     },
   ],
