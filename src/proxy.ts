@@ -182,6 +182,16 @@ const defaultMiddleware = async (request: NextRequest) => {
   }
 
   // ============================================================
+  // LANDING PAGE ROUTES - Skip variant prefixing
+  // These routes render standalone pages without auth/i18n handling
+  // @see TASK-004 through TASK-006
+  // ============================================================
+  if (pathname.startsWith('/page/') || pathname.startsWith('/preview/')) {
+    logTenant('Landing page route detected, bypassing variant prefix: %s', pathname);
+    return NextResponse.next();
+  }
+
+  // ============================================================
   // ORIGINAL LOBECHAT MIDDLEWARE LOGIC
   // ============================================================
 
