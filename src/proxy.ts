@@ -158,7 +158,7 @@ const defaultMiddleware = async (request: NextRequest) => {
     // Handle /lp/{slug} -> /page/{tenantId}/{slug}
     if (pathname.startsWith('/lp/')) {
       const slug = pathname.slice(4); // Remove '/lp/' prefix
-      const rewriteUrl = new URL(`/page/${tenantId}${slug}`, request.url);
+      const rewriteUrl = new URL(`/page/${tenantId}/${slug}`, request.url);
       logTenant('URL rewrite: %O', { from: pathname, slug, tenantId, to: rewriteUrl.pathname });
       return addTenantHeader(NextResponse.rewrite(rewriteUrl), tenantId);
     }
