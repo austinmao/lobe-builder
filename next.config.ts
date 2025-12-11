@@ -29,6 +29,8 @@ const nextConfig: NextConfig = {
   },
   compress: isProd,
   experimental: {
+    // Reduce CPU concurrency to lower memory pressure during builds
+    cpus: 1,
     optimizePackageImports: [
       'emoji-mart',
       '@emoji-mart/react',
@@ -42,10 +44,13 @@ const nextConfig: NextConfig = {
     // so we need to disable it
     // refs: https://github.com/lobehub/lobe-chat/pull/7430
     serverMinification: false,
+    // Disable server source maps to reduce memory usage
+    serverSourceMaps: false,
     webVitalsAttribution: ['CLS', 'LCP'],
     webpackBuildWorker: true,
     webpackMemoryOptimizations: true,
   },
+
   async headers() {
     const securityHeaders = [
       {
@@ -196,6 +201,8 @@ const nextConfig: NextConfig = {
       hmrRefreshes: true,
     },
   },
+  // Disable browser source maps in production to reduce memory during build
+  productionBrowserSourceMaps: false,
   reactStrictMode: true,
   redirects: async () => [
     {
