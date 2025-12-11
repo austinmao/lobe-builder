@@ -13,6 +13,7 @@ import { appEnv } from '@/envs/app';
 import { authEnv } from '@/envs/auth';
 import NextAuth from '@/libs/next-auth';
 import { Locales } from '@/locales/resources';
+import { getTenantDomains } from '@/server/services/tenant';
 
 import { oidcEnv } from './envs/oidc';
 import { parseBrowserLanguage } from './utils/locale';
@@ -26,14 +27,15 @@ const logBetterAuth = debug('middleware:better-auth');
 const logTenant = debug('middleware:tenant');
 
 /**
- * TENANT_DOMAINS Configuration
+ * FALLBACK_TENANT_DOMAINS Configuration
  *
- * Maps custom domain hostnames to their corresponding tenant identifiers.
- * Used for Ceremonia and other tenant landing pages.
+ * Hardcoded fallback domains for development and testing.
+ * These are merged with database-loaded domains.
  *
  * @see TASK-007: Create middleware with TENANT_DOMAINS config
+ * @see TASK-024: Dynamic domain loading from database
  */
-const TENANT_DOMAINS: Record<string, string> = {
+const FALLBACK_TENANT_DOMAINS: Record<string, string> = {
   'live.ceremoniacircle.org': 'ceremonia',
 };
 
@@ -103,7 +105,7 @@ export const config = {
 
 const backendApiEndpoints = ['/api', '/trpc', '/webapi', '/oidc'];
 
-const defaultMiddleware = (request: NextRequest) => {
+const defaultMiddleware = async (request: NextRequest) => {
   const url = new URL(request.url);
   const hostname = request.headers.get('host') || '';
   const pathname = url.pathname;
@@ -112,7 +114,21 @@ const defaultMiddleware = (request: NextRequest) => {
   // ============================================================
   // TENANT DOMAIN HANDLING (Ceremonia Landing Pages)
   // @see TASK-007 through TASK-012
+  // @see TASK-024: Dynamic domain loading from database
   // ============================================================
+
+  // Load tenant domains from database (cached)
+  const dbDomains = await getTenantDomains();
+
+  // Merge database domains with fallback domains
+  const TENANT_DOMAINS = { ...FALLBACK_TENANT_DOMAINS, ...dbDomains };
+
+  logTenant('Loaded tenant domains: %O', {
+    dbDomainCount: Object.keys(dbDomains).length,
+    fallbackDomainCount: Object.keys(FALLBACK_TENANT_DOMAINS).length,
+    totalDomains: Object.keys(TENANT_DOMAINS).length,
+  });
+
   const tenantId = TENANT_DOMAINS[hostname];
 
   if (tenantId) {
@@ -331,10 +347,10 @@ const isProtectedRoute = createRouteMatcher([
 ]);
 
 // Initialize an Edge compatible NextAuth middleware
-const nextAuthMiddleware = NextAuth.auth((req) => {
+const nextAuthMiddleware = NextAuth.auth(async (req) => {
   logNextAuth('NextAuth middleware processing request: %s %s', req.method, req.url);
 
-  const response = defaultMiddleware(req);
+  const response = await defaultMiddleware(req);
 
   // when enable auth protection, only public route is not protected, others are all protected
   const isProtected = appEnv.ENABLE_AUTH_PROTECTION ? !isPublicRoute(req) : isProtectedRoute(req);
@@ -399,7 +415,7 @@ const clerkAuthMiddleware = clerkMiddleware(
       await auth.protect();
     }
 
-    const response = defaultMiddleware(req);
+    const response = await defaultMiddleware(req);
 
     const data = await auth();
     logClerk('Clerk auth status: %O', {
@@ -428,7 +444,7 @@ const clerkAuthMiddleware = clerkMiddleware(
 const betterAuthMiddleware = async (req: NextRequest) => {
   logBetterAuth('BetterAuth middleware processing request: %s %s', req.method, req.url);
 
-  const response = defaultMiddleware(req);
+  const response = await defaultMiddleware(req);
 
   // when enable auth protection, only public route is not protected, others are all protected
   const isProtected = appEnv.ENABLE_AUTH_PROTECTION ? !isPublicRoute(req) : isProtectedRoute(req);

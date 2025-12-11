@@ -768,7 +768,42 @@
     "storage": "Data Storage",
     "sync": "Cloud Sync",
     "system-agent": "System Assistant",
+    "tenant": "Tenant Settings",
     "tts": "Text-to-Speech"
+  },
+  "tenant": {
+    "domain": {
+      "addButton": "Add Custom Domain",
+      "addModalTitle": "Add Custom Domain",
+      "addSubmit": "Add Domain",
+      "cnameInstructions": "After TXT verification succeeds, add this CNAME record to point your domain to Vercel:",
+      "cnameRecord": "CNAME Record",
+      "configureDNS": "Configure DNS Records",
+      "confirmRemove": "Confirm",
+      "copied": "Copied",
+      "copy": "Copy",
+      "dnsInstructions": "Add the following DNS record to your domain provider to verify ownership:",
+      "domainLabel": "Domain",
+      "noDomain": "No custom domain configured",
+      "or": "or",
+      "pendingVerification": "Domain: {{domain}} - Pending Verification",
+      "placeholder": "example.com",
+      "recordName": "Name",
+      "recordType": "Type",
+      "recordValue": "Value",
+      "removeButton": "Remove Domain",
+      "removeConfirm": "Are you sure you want to remove this domain?",
+      "removeModalTitle": "Remove Domain",
+      "removeSuccess": "Domain removed",
+      "required": "Domain is required",
+      "statusPending": "Pending Verification",
+      "statusVerified": "Verified",
+      "txtRecord": "TXT Record",
+      "verified": "Domain Verified: {{domain}}",
+      "verifyButton": "Verify Domain",
+      "verifySuccess": "Domain verified"
+    },
+    "title": "Tenant Settings"
   },
   "tools": {
     "builtins": {

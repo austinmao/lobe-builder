@@ -153,7 +153,7 @@ export function validateDomain(domain: string): boolean {
 
   // TLD (last label) must not be all numeric
   const tld = labels.at(-1);
-  if (/^\d+$/.test(tld)) {
+  if (!tld || /^\d+$/.test(tld)) {
     return false;
   }
 

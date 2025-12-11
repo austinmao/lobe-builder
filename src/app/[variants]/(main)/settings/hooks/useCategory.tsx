@@ -5,6 +5,7 @@ import {
   Brain,
   Database,
   EthernetPort,
+  Globe,
   Image as ImageIcon,
   Info,
   KeyboardIcon,
@@ -77,6 +78,11 @@ export const useCategory = () => {
           icon: <Icon icon={Database} />,
           key: SettingsTabs.Storage,
           label: t('tab.storage'),
+        },
+        {
+          icon: <Icon icon={Globe} />,
+          key: SettingsTabs.Tenant,
+          label: t('tab.tenant'),
         },
         !hideDocs && {
           icon: <Icon icon={Info} />,

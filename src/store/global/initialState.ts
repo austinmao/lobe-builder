@@ -44,6 +44,7 @@ export enum SettingsTabs {
   Storage = 'storage',
   SystemAgent = 'system-agent',
   TTS = 'tts',
+  Tenant = 'tenant'
 }
 
 export enum ProfileTabs {

@@ -8,25 +8,22 @@ import Loading from '@/components/Loading/BrandTextLoading';
 import { SettingsTabs } from '@/store/global/initialState';
 
 const componentMap = {
-  [SettingsTabs.Common]: dynamic(() => import('../common'), {
+  [SettingsTabs.About]: dynamic(() => import('../about'), {
     loading: () => <Loading />,
   }),
   [SettingsTabs.Agent]: dynamic(() => import('../agent'), {
     loading: () => <Loading />,
   }),
-  [SettingsTabs.Provider]: dynamic(() => import('../provider'), {
+  [SettingsTabs.Common]: dynamic(() => import('../common'), {
+    loading: () => <Loading />,
+  }),
+  [SettingsTabs.Hotkey]: dynamic(() => import('../hotkey'), {
     loading: () => <Loading />,
   }),
   [SettingsTabs.Image]: dynamic(() => import('../image'), {
     loading: () => <Loading />,
   }),
-  [SettingsTabs.TTS]: dynamic(() => import('../tts'), {
-    loading: () => <Loading />,
-  }),
-  [SettingsTabs.About]: dynamic(() => import('../about'), {
-    loading: () => <Loading />,
-  }),
-  [SettingsTabs.Hotkey]: dynamic(() => import('../hotkey'), {
+  [SettingsTabs.Provider]: dynamic(() => import('../provider'), {
     loading: () => <Loading />,
   }),
   [SettingsTabs.Proxy]: dynamic(() => import('../proxy'), {
@@ -36,6 +33,12 @@ const componentMap = {
     loading: () => <Loading />,
   }),
   [SettingsTabs.SystemAgent]: dynamic(() => import('../system-agent'), {
+    loading: () => <Loading />,
+  }),
+  [SettingsTabs.Tenant]: dynamic(() => import('../tenant'), {
+    loading: () => <Loading />,
+  }),
+  [SettingsTabs.TTS]: dynamic(() => import('../tts'), {
     loading: () => <Loading />,
   }),
 };
