@@ -136,7 +136,7 @@ export class DiscoverService {
 
     try {
       // Call cloud gateway with user access token in Authorization header
-      // @ts-expect-error - callCloudGateway is provided at runtime by unreleased SDK method
+      // @ts-ignore - callCloudGateway may not exist in all SDK versions
       const result = await this.market.plugins.callCloudGateway(
         {
           apiParams: params.apiParams,
