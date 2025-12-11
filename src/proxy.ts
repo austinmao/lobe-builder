@@ -347,6 +347,12 @@ const isPublicRoute = createRouteMatcher([
   '/oauth/consent/(.*)',
   '/oidc/handoff',
   '/oidc/token',
+  // Landing pages - must be public for multi-tenant sites
+  // @see TASK-004 through TASK-006
+  '/page/(.*)',
+  '/preview/(.*)',
+  '/lp',
+  '/lp/(.*)',
 ]);
 
 const isProtectedRoute = createRouteMatcher([
