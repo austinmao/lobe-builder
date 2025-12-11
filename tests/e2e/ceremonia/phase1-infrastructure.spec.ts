@@ -16,6 +16,9 @@ import { expect, test } from '@playwright/test';
 import { testPageData } from './fixtures/test-page';
 import { ceremoniaUser } from './fixtures/user';
 
+// Payload CMS API URL (separate from main app)
+const PAYLOAD_URL = process.env.PAYLOAD_URL || 'http://localhost:3011';
+
 test.describe('Phase 1: Infrastructure Setup', () => {
   test.describe.configure({ mode: 'serial' }); // Run tests in order
 
@@ -23,7 +26,7 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     // RED: This will fail initially - tenant doesn't exist
     // Note: User creation requires admin auth in production. This test verifies
     // that the Ceremonia tenant and user exist (seeded via scripts/seed-ceremonia.ts)
-    const loginResponse = await request.post('/api/users/login', {
+    const loginResponse = await request.post(`${PAYLOAD_URL}/api/users/login`, {
       data: {
         email: ceremoniaUser.email,
         password: ceremoniaUser.password,
@@ -45,7 +48,7 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     // RED: This will fail initially - Payload pages collection may not be configured
 
     // Login as Ceremonia user
-    const loginResponse = await request.post('/api/users/login', {
+    const loginResponse = await request.post(`${PAYLOAD_URL}/api/users/login`, {
       data: {
         email: ceremoniaUser.email,
         password: ceremoniaUser.password,
@@ -57,12 +60,8 @@ test.describe('Phase 1: Infrastructure Setup', () => {
 
     // Check if page already exists (idempotent test)
     const existingResponse = await request.get(
-      `/api/pages?where[slug][equals]=${testPageData.slug}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
+      `${PAYLOAD_URL}/api/pages?where[slug][equals]=${testPageData.slug}`,
+      { headers: { Authorization: `Bearer ${token}` } },
     );
 
     const existingData = await existingResponse.json();
@@ -70,19 +69,15 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     // If page exists, delete it first to ensure clean test
     if (existingData.docs && existingData.docs.length > 0) {
       const existingPage = existingData.docs[0];
-      await request.delete(`/api/pages/${existingPage.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      await request.delete(`${PAYLOAD_URL}/api/pages/${existingPage.id}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
     }
 
     // Create test page
-    const response = await request.post('/api/pages', {
+    const response = await request.post(`${PAYLOAD_URL}/api/pages`, {
       data: testPageData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     expect(response.status()).toBe(201);
@@ -126,7 +121,7 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     // RED: This will fail initially - publish workflow may not be configured
 
     // Login and get page
-    const loginResponse = await request.post('/api/users/login', {
+    const loginResponse = await request.post(`${PAYLOAD_URL}/api/users/login`, {
       data: {
         email: ceremoniaUser.email,
         password: ceremoniaUser.password,
@@ -136,9 +131,10 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     const { token } = await loginResponse.json();
 
     // Find page by slug (tenant filtering is automatic via access control)
-    const pagesResponse = await request.get('/api/pages?where[slug][equals]=test-page', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const pagesResponse = await request.get(
+      `${PAYLOAD_URL}/api/pages?where[slug][equals]=test-page`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
 
     expect(pagesResponse.ok()).toBeTruthy();
     const { docs } = await pagesResponse.json();
@@ -148,7 +144,7 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     const pageId = docs[0].id;
 
     // Publish page
-    const publishResponse = await request.patch(`/api/pages/${pageId}`, {
+    const publishResponse = await request.patch(`${PAYLOAD_URL}/api/pages/${pageId}`, {
       data: { _status: 'published' },
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -178,7 +174,7 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     // The key test is: Ceremonia user should NOT see other-tenant's pages
 
     // First, login as Ceremonia user to get their token
-    const ceremoniaLoginResponse = await request.post('/api/users/login', {
+    const ceremoniaLoginResponse = await request.post(`${PAYLOAD_URL}/api/users/login`, {
       data: {
         email: ceremoniaUser.email,
         password: ceremoniaUser.password,
@@ -189,7 +185,7 @@ test.describe('Phase 1: Infrastructure Setup', () => {
     const { token: ceremoniaToken } = await ceremoniaLoginResponse.json();
 
     // Try to query all pages - should only see pages from Ceremonia tenant
-    const crossTenantResponse = await request.get('/api/pages', {
+    const crossTenantResponse = await request.get(`${PAYLOAD_URL}/api/pages`, {
       headers: { Authorization: `Bearer ${ceremoniaToken}` },
     });
 

@@ -16,6 +16,9 @@ import { expect, test } from '@playwright/test';
 import { firstLandingPage } from './fixtures/first-page';
 import { ceremoniaUser } from './fixtures/user';
 
+// Payload CMS API URL (separate from main app)
+const PAYLOAD_URL = process.env.PAYLOAD_URL || 'http://localhost:3011';
+
 test.describe('Phase 3: First Landing Page', () => {
   test.describe.configure({ mode: 'serial' });
 
@@ -24,24 +27,40 @@ test.describe('Phase 3: First Landing Page', () => {
   test('3.1: should create "Softening the Season" page in Payload', async ({ request }) => {
     // RED: This will fail initially - page structure may not match schema
 
-    // Login
-    const loginResponse = await request.post('/api/payload/login', {
+    // Login to Payload CMS
+    const loginResponse = await request.post(`${PAYLOAD_URL}/api/users/login`, {
       data: {
         email: ceremoniaUser.email,
         password: ceremoniaUser.password,
       },
     });
 
+    expect(loginResponse.ok()).toBeTruthy();
     const { token } = await loginResponse.json();
 
+    // Check if page already exists (idempotent test)
+    const existingResponse = await request.get(
+      `${PAYLOAD_URL}/api/pages?where[slug][equals]=${pageSlug}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    const existingData = await existingResponse.json();
+
+    // If page exists, delete it first to ensure clean test
+    if (existingData.docs && existingData.docs.length > 0) {
+      await request.delete(`${PAYLOAD_URL}/api/pages/${existingData.docs[0].id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+    }
+
     // Create first landing page
-    const response = await request.post('/api/payload/pages', {
+    const response = await request.post(`${PAYLOAD_URL}/api/pages`, {
       data: firstLandingPage,
       headers: { Authorization: `Bearer ${token}` },
     });
 
     expect(response.status()).toBe(201);
-    const page = await response.json();
+    const result = await response.json();
+    const page = result.doc;
 
     expect(page.slug).toBe(pageSlug);
     expect(page.title).toContain('Softening the Season');
@@ -150,8 +169,8 @@ test.describe('Phase 3: First Landing Page', () => {
   test('3.4: should have correct SEO metadata', async ({ page, request }) => {
     // RED: This will fail initially - SEO metadata may not be generated
 
-    // Publish page first
-    const loginResponse = await request.post('/api/payload/login', {
+    // Publish page first via Payload CMS API
+    const loginResponse = await request.post(`${PAYLOAD_URL}/api/users/login`, {
       data: {
         email: ceremoniaUser.email,
         password: ceremoniaUser.password,
@@ -159,13 +178,14 @@ test.describe('Phase 3: First Landing Page', () => {
     });
     const { token } = await loginResponse.json();
 
-    const pagesResponse = await request.get(`/api/payload/pages?where[slug][equals]=${pageSlug}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    const pagesResponse = await request.get(
+      `${PAYLOAD_URL}/api/pages?where[slug][equals]=${pageSlug}`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
     const { docs } = await pagesResponse.json();
     const pageId = docs[0].id;
 
-    await request.patch(`/api/payload/pages/${pageId}`, {
+    await request.patch(`${PAYLOAD_URL}/api/pages/${pageId}`, {
       data: { _status: 'published' },
       headers: { Authorization: `Bearer ${token}` },
     });
