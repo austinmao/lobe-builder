@@ -5,7 +5,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { UAParser } from 'ua-parser-js';
 import urlJoin from 'url-join';
 
-import { auth } from '@/auth';
+// NOTE: Do NOT import @/auth statically - it requires Node.js runtime (database)
+// Better Auth handler is dynamically imported only when enabled
 import { OAUTH_AUTHORIZED } from '@/const/auth';
 import { LOBE_LOCALE_COOKIE } from '@/const/locale';
 import { LOBE_THEME_APPEARANCE } from '@/const/theme';
@@ -453,6 +454,10 @@ const betterAuthMiddleware = async (req: NextRequest) => {
 
   // Skip session lookup for public routes to reduce latency
   if (!isProtected) return response;
+
+  // Dynamic import: @/auth requires Node.js runtime (database access)
+  // This import is only executed when Better Auth is enabled
+  const { auth } = await import('@/auth');
 
   // Get full session with user data (Next.js 15.2.0+ feature)
   const session = await auth.api.getSession({
