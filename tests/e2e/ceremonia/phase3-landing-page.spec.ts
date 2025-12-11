@@ -91,28 +91,56 @@ test.describe('Phase 3: First Landing Page', () => {
   test('3.3: should be mobile responsive', async ({ page }) => {
     // RED: This will fail initially - responsive styles may not be applied
 
-    // Test mobile viewport (iPhone SE)
-    await page.setViewportSize({ height: 667, width: 375 });
-    await page.goto(`/preview/ceremonia/${pageSlug}`);
+    // TASK-016: Test all required viewports (320px, 375px, 414px, 768px)
+    const viewports = [
+      { height: 568, name: 'iPhone SE (smallest)', width: 320 },
+      { height: 667, name: 'iPhone SE', width: 375 },
+      { height: 896, name: 'iPhone XR', width: 414 },
+      { height: 1024, name: 'iPad', width: 768 },
+    ];
 
-    // Verify content visible
-    await expect(page.locator('h1')).toBeVisible();
-    await expect(page.locator('text=Emotional Regulation')).toBeVisible();
-    await expect(page.locator('button:has-text("Register Now")')).toBeVisible();
+    for (const viewport of viewports) {
+      await page.setViewportSize({ height: viewport.height, width: viewport.width });
+      await page.goto(`/preview/ceremonia/${pageSlug}`);
 
-    // Verify no horizontal scroll
-    const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
-    const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1); // Allow 1px tolerance
+      // Verify content visible at this viewport
+      await expect(page.locator('h1')).toBeVisible();
+      await expect(page.locator('text=Emotional Regulation')).toBeVisible();
 
-    // Test tablet viewport (iPad)
-    await page.setViewportSize({ height: 1024, width: 768 });
-    await page.goto(`/preview/ceremonia/${pageSlug}`);
+      // BLOCKING: No horizontal scroll
+      const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+      const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
+      expect(
+        scrollWidth,
+        `No horizontal scroll at ${viewport.name} (${viewport.width}px)`,
+      ).toBeLessThanOrEqual(clientWidth + 1); // Allow 1px tolerance
 
-    await expect(page.locator('h1')).toBeVisible();
-    await expect(page.locator("text=What You'll Learn")).toBeVisible();
+      // BLOCKING: Touch target size >= 44px for all buttons
+      const buttons = await page.locator('a[class*="rounded-lg"]').all();
+      for (const button of buttons) {
+        const box = await button.boundingBox();
+        if (box) {
+          expect(box.height, `Button height >= 44px at ${viewport.name}`).toBeGreaterThanOrEqual(
+            44,
+          );
+          // Width can vary based on text, but should be reasonable
+          expect(box.width, `Button width >= 44px at ${viewport.name}`).toBeGreaterThanOrEqual(44);
+        }
+      }
 
-    // Test desktop viewport
+      // Verify all sections stack correctly (visible without scrolling horizontally)
+      const sections = await page.locator('section').all();
+      for (const section of sections) {
+        const box = await section.boundingBox();
+        if (box) {
+          expect(box.width, `Section width <= viewport at ${viewport.name}`).toBeLessThanOrEqual(
+            viewport.width + 1,
+          );
+        }
+      }
+    }
+
+    // Test desktop viewport for comparison
     await page.setViewportSize({ height: 1080, width: 1920 });
     await page.goto(`/preview/ceremonia/${pageSlug}`);
 
