@@ -16,10 +16,18 @@ export const Pages: CollectionConfig = {
     defaultColumns: ['title', 'slug', 'designSystem', 'updatedAt'],
   },
   access: {
-    // Read access: Admin users can read all pages, non-admin users can only read pages from their tenants
-    // The multi-tenant plugin wraps this and adds tenant constraints when useTenantAccess is true
+    // Read access: Published pages are publicly readable, drafts require authentication
+    // Admin users can read all pages, non-admin users can only read pages from their tenants
     read: ({ req: { user } }) => {
-      if (!user) return false;
+      // Public access: allow reading published pages without authentication
+      // This enables the public landing page routes to fetch page data
+      if (!user) {
+        return {
+          _status: {
+            equals: 'published',
+          },
+        };
+      }
       // Admin role can read all pages (plugin's userHasAccessToAllTenants handles this)
       if (user.roles?.includes('admin')) return true;
       // Non-admin users: return tenant constraint for cross-tenant isolation
