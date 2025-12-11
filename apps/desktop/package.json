@@ -21,7 +21,7 @@
     "electron:run-unpack": "electron .",
     "format": "prettier --write ",
     "i18n": "tsx scripts/i18nWorkflow/index.ts && lobe-i18n",
-    "postinstall": "test -n \"$VERCEL\" || electron-builder install-app-deps",
+    "postinstall": "node -e \"process.exit(process.env.VERCEL || process.env.CI ? 0 : 1)\" || electron-builder install-app-deps",
     "install-isolated": "pnpm install",
     "lint": "eslint --cache ",
     "start": "electron-vite preview",
