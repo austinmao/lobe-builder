@@ -2,6 +2,20 @@
 
 # Changelog
 
+## Unreleased
+
+<sup>Development on **2025-12-11**</sup>
+
+#### ✨ Features
+
+- **testing**: Add integration tests for domain management tRPC endpoints (TDD-RED phase)
+  - Created comprehensive test suite for domain.add, domain.verify, domain.remove endpoints
+  - Tests cover happy paths, error handling, validation, permissions, and edge cases
+  - Tests intentionally fail (RED phase) to drive implementation in next task
+  - File: `src/server/routers/lambda/__tests__/domain.test.ts` (391 lines)
+
+<br/>
+
 ## [Version 2.0.0-next.145](https://github.com/lobehub/lobe-chat/compare/v2.0.0-next.144...v2.0.0-next.145)
 
 <sup>Released on **2025-12-02**</sup>
