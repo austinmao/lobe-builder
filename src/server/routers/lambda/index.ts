@@ -12,6 +12,7 @@ import { chunkRouter } from './chunk';
 import { comfyuiRouter } from './comfyui';
 import { configRouter } from './config';
 import { documentRouter } from './document';
+import { domainRouter } from './domain';
 import { exporterRouter } from './exporter';
 import { fileRouter } from './file';
 import { generationRouter } from './generation';
@@ -43,6 +44,7 @@ export const lambdaRouter = router({
   comfyui: comfyuiRouter,
   config: configRouter,
   document: documentRouter,
+  domain: domainRouter,
   exporter: exporterRouter,
   file: fileRouter,
   generation: generationRouter,
