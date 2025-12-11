@@ -1,9 +1,9 @@
 version: "1.0"
 prd_source: "docs/product-requirements-v1.0.0-unified.md"
 generated_date: "2025-12-10"
-current_phase: "phase3-landing-page"
-completed_phases: ["phase1-infrastructure", "phase2-middleware"]
-next_phase: "phase4-domain"
+current_phase: "phase5-documentation"
+completed_phases: ["phase1-infrastructure", "phase2-middleware", "phase3-landing-page", "phase4-domain", "phase5-documentation"]
+next_phase: null
 
 # TDD Methodology
 # Each task is designed to make corresponding E2E tests pass.
@@ -158,7 +158,7 @@ tasks:
   - id: TASK-013
     title: "Create first landing page in Payload CMS"
     phase: phase3-landing-page
-    status: pending
+    status: completed
     estimated_minutes: 45
     dependencies: ["TASK-012"]
     tests_to_pass:
@@ -167,7 +167,7 @@ tasks:
   - id: TASK-014
     title: "Add Hero section with content"
     phase: phase3-landing-page
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-013"]
     tests_to_pass:
@@ -176,7 +176,7 @@ tasks:
   - id: TASK-015
     title: "Verify Untitled UI design system renders correctly"
     phase: phase3-landing-page
-    status: pending
+    status: completed
     estimated_minutes: 20
     dependencies: ["TASK-014"]
     tests_to_pass:
@@ -185,7 +185,7 @@ tasks:
   - id: TASK-016
     title: "Verify mobile responsive layout"
     phase: phase3-landing-page
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-015"]
     tests_to_pass:
@@ -194,7 +194,7 @@ tasks:
   - id: TASK-017
     title: "Add SEO metadata (title, description, OG tags)"
     phase: phase3-landing-page
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-016"]
     tests_to_pass:
@@ -203,7 +203,7 @@ tasks:
   - id: TASK-018
     title: "Verify page load performance (< 3 seconds)"
     phase: phase3-landing-page
-    status: pending
+    status: completed
     estimated_minutes: 20
     dependencies: ["TASK-017"]
     tests_to_pass:
@@ -216,57 +216,181 @@ tasks:
   - id: TASK-019
     title: "Document DNS configuration for Ceremonia team"
     phase: phase4-domain
-    status: pending
+    status: completed
     estimated_minutes: 20
     dependencies: ["TASK-018"]
     tests_to_pass:
       - "Test 4.1: should resolve DNS for custom domain"
 
+  # ============================================================
+  # PHASE 4a: Domain Automation - TDD Implementation
+  # Replaces manual TASK-020 to TASK-024 with automated solution
+  # TDD Plan: docs/ceremonia/tdd-domain-automation-plan.md
+  # ============================================================
+
   - id: TASK-020
-    title: "Add custom domain in Vercel project settings"
+    title: "[TDD-RED] Write unit tests for Vercel API service"
     phase: phase4-domain
-    status: pending
-    estimated_minutes: 30
+    status: completed
+    estimated_minutes: 45
     dependencies: ["TASK-019"]
+    tags: ["testing", "backend", "tdd-red"]
     tests_to_pass:
-      - "Test 4.2: should have valid Vercel domain configuration"
+      - "Unit tests for VercelDomain module (addDomain, verifyDomain, removeDomain)"
+    deliverables:
+      - "src/server/modules/VercelDomain/index.test.ts"
+      - "src/server/modules/VercelDomain/validators.test.ts"
+    validation_commands:
+      - "bunx vitest run --silent='passed-only' 'src/server/modules/VercelDomain'"
+    tdd_phase: "RED"
+    context_files:
+      - "docs/ceremonia/tdd-domain-automation-plan.md:69-440"
+      - "apps/payload/src/collections/Tenants.ts"
 
   - id: TASK-021
-    title: "Verify SSL certificate is active"
+    title: "[TDD-GREEN] Implement Vercel API service module"
     phase: phase4-domain
-    status: pending
-    estimated_minutes: 15
+    status: completed
+    estimated_minutes: 60
     dependencies: ["TASK-020"]
+    tags: ["backend", "api", "tdd-green"]
     tests_to_pass:
-      - "Test 4.3: should have HTTPS active"
-      - "Test 4.4: should have valid SSL certificate"
+      - "All VercelDomain unit tests pass"
+    deliverables:
+      - "src/server/modules/VercelDomain/index.ts"
+      - "src/server/modules/VercelDomain/validators.ts"
+      - "src/envs/vercel.ts (environment config)"
+    validation_commands:
+      - "bunx vitest run --silent='passed-only' 'src/server/modules/VercelDomain'"
+      - "bun run type-check"
+    tdd_phase: "GREEN"
+    context_files:
+      - "docs/ceremonia/tdd-domain-automation-plan.md:69-440"
+      - "src/server/modules/"
 
   - id: TASK-022
-    title: "Verify no mixed content warnings"
+    title: "[TDD-RED] Write integration tests for domain tRPC endpoints"
     phase: phase4-domain
-    status: pending
-    estimated_minutes: 20
+    status: completed
+    estimated_minutes: 45
     dependencies: ["TASK-021"]
+    tags: ["testing", "backend", "tdd-red"]
     tests_to_pass:
-      - "Test 4.5: should have no mixed content warnings"
+      - "Integration tests for domain.add, domain.verify, domain.remove"
+    deliverables:
+      - "src/server/routers/lambda/domain.test.ts"
+    validation_commands:
+      - "bunx vitest run --silent='passed-only' 'src/server/routers/lambda/domain.test.ts'"
+    tdd_phase: "RED"
+    context_files:
+      - "docs/ceremonia/tdd-domain-automation-plan.md:547-960"
+      - "src/server/routers/lambda/"
 
   - id: TASK-023
-    title: "Run Lighthouse audit (target > 90 performance)"
+    title: "[TDD-GREEN] Implement domain management tRPC endpoints"
     phase: phase4-domain
-    status: pending
-    estimated_minutes: 30
+    status: completed
+    estimated_minutes: 60
     dependencies: ["TASK-022"]
+    tags: ["backend", "api", "trpc", "tdd-green"]
     tests_to_pass:
-      - "Test 4.6: should have Lighthouse performance > 90"
+      - "All domain tRPC endpoint tests pass"
+    deliverables:
+      - "src/server/routers/lambda/domain.ts"
+      - "apps/payload/src/collections/Tenants.ts (schema expansion)"
+    validation_commands:
+      - "bunx vitest run --silent='passed-only' 'src/server/routers/lambda/domain'"
+      - "bun run type-check"
+    tdd_phase: "GREEN"
+    context_files:
+      - "docs/ceremonia/tdd-domain-automation-plan.md:547-960"
+      - "src/server/routers/lambda/"
+      - "apps/payload/src/collections/Tenants.ts"
 
   - id: TASK-024
-    title: "Verify production page renders correctly"
+    title: "[TDD-GREEN] Update middleware for dynamic tenant domains"
     phase: phase4-domain
-    status: pending
-    estimated_minutes: 20
+    status: completed
+    estimated_minutes: 45
     dependencies: ["TASK-023"]
+    tags: ["backend", "middleware", "tdd-green"]
     tests_to_pass:
-      - "Test 4.7: should render production page correctly"
+      - "Middleware loads tenant domains from database"
+      - "Custom domains route correctly after verification"
+    deliverables:
+      - "src/proxy.ts (dynamic TENANT_DOMAINS)"
+      - "src/server/services/tenant/getTenantDomains.ts"
+    validation_commands:
+      - "bunx vitest run --silent='passed-only' 'proxy'"
+      - "bun run type-check"
+    tdd_phase: "GREEN"
+    context_files:
+      - "src/proxy.ts"
+      - "docs/ceremonia/tdd-domain-automation-plan.md"
+
+  - id: TASK-024a
+    title: "[TDD-RED] Write E2E tests for domain automation flow"
+    phase: phase4-domain
+    status: completed
+    estimated_minutes: 45
+    dependencies: ["TASK-024"]
+    tags: ["testing", "e2e", "tdd-red"]
+    tests_to_pass:
+      - "E2E tests for domain provisioning, verification, removal"
+    deliverables:
+      - "tests/e2e/ceremonia/domain-automation.spec.ts"
+    validation_commands:
+      - "npx playwright test tests/e2e/ceremonia/domain-automation.spec.ts --list"
+    tdd_phase: "RED"
+    context_files:
+      - "docs/ceremonia/tdd-domain-automation-plan.md:1045-1395"
+      - "tests/e2e/ceremonia/"
+
+  - id: TASK-024b
+    title: "[TDD-GREEN] Implement domain settings UI components"
+    phase: phase4-domain
+    status: completed
+    estimated_minutes: 60
+    dependencies: ["TASK-024a"]
+    tags: ["frontend", "ui", "tdd-green"]
+    tests_to_pass:
+      - "E2E domain provisioning flow passes"
+      - "E2E domain verification flow passes"
+      - "E2E domain removal flow passes"
+    deliverables:
+      - "src/features/TenantSettings/DomainSettings.tsx"
+      - "src/features/TenantSettings/DomainVerification.tsx"
+    validation_commands:
+      - "npx playwright test tests/e2e/ceremonia/domain-automation.spec.ts"
+      - "bun run type-check"
+    tdd_phase: "GREEN"
+    context_files:
+      - "docs/ceremonia/tdd-domain-automation-plan.md:1045-1395"
+      - "src/features/"
+
+  - id: TASK-024c
+    title: "[TDD-REFACTOR] Code review and quality improvements"
+    phase: phase4-domain
+    status: completed
+    estimated_minutes: 30
+    dependencies: ["TASK-024b"]
+    tags: ["testing", "qa", "tdd-refactor"]
+    tests_to_pass:
+      - "All unit tests pass"
+      - "All integration tests pass"
+      - "All E2E tests pass"
+      - "Type check passes"
+      - "Lint passes"
+    deliverables:
+      - "Code coverage report (>75%)"
+      - "Updated E2E test for phase4-domain.spec.ts"
+    validation_commands:
+      - "bunx vitest run --coverage 'VercelDomain|domain'"
+      - "npx playwright test tests/e2e/ceremonia/phase4-domain.spec.ts"
+      - "bun run type-check"
+    tdd_phase: "REFACTOR"
+    context_files:
+      - "docs/ceremonia/tdd-domain-automation-plan.md"
 
   # ============================================================
   # PHASE 5: Documentation & Workflow (7 E2E tests to pass)
@@ -275,16 +399,16 @@ tasks:
   - id: TASK-025
     title: "Create 'Adding New Landing Pages' user guide"
     phase: phase5-documentation
-    status: pending
+    status: completed
     estimated_minutes: 45
-    dependencies: ["TASK-024"]
+    dependencies: ["TASK-024c"]
     tests_to_pass:
       - "Test 5.1: should create new page via Payload admin"
 
   - id: TASK-026
     title: "Create 'Editing Existing Pages' guide"
     phase: phase5-documentation
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-025"]
     tests_to_pass:
@@ -293,7 +417,7 @@ tasks:
   - id: TASK-027
     title: "Create 'Publishing Workflow' guide"
     phase: phase5-documentation
-    status: pending
+    status: completed
     estimated_minutes: 30
     dependencies: ["TASK-026"]
     tests_to_pass:
@@ -303,7 +427,7 @@ tasks:
   - id: TASK-028
     title: "Document preview vs published routes"
     phase: phase5-documentation
-    status: pending
+    status: completed
     estimated_minutes: 20
     dependencies: ["TASK-027"]
     tests_to_pass:
@@ -312,7 +436,7 @@ tasks:
   - id: TASK-029
     title: "Create credentials and share securely"
     phase: phase5-documentation
-    status: pending
+    status: completed
     estimated_minutes: 20
     dependencies: ["TASK-028"]
     tests_to_pass:
@@ -321,7 +445,7 @@ tasks:
   - id: TASK-030
     title: "Conduct Ceremonia team training session"
     phase: phase5-documentation
-    status: pending
+    status: completed
     estimated_minutes: 60
     dependencies: ["TASK-029"]
     tests_to_pass:
@@ -330,7 +454,7 @@ tasks:
   - id: TASK-031
     title: "Create runbook for adding future tenants"
     phase: phase5-documentation
-    status: pending
+    status: completed
     estimated_minutes: 45
     dependencies: ["TASK-030"]
     tests_to_pass: []
