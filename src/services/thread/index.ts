@@ -23,7 +23,10 @@ export class ThreadService {
     });
   };
 
-  updateThread = async (id: string, data: Partial<ThreadItem>) => {
+  updateThread = async (
+    id: string,
+    data: Partial<Omit<ThreadItem, 'status'>> & { status?: string },
+  ) => {
     return lambdaClient.thread.updateThread.mutate({ id, value: data });
   };
 
