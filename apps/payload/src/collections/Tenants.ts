@@ -3,12 +3,29 @@ import type { CollectionConfig } from 'payload';
 /**
  * Check if request has valid service authentication
  * Service auth uses PAYLOAD_SERVICE_SECRET header for service-to-service calls
+ *
+ * Note: Payload CMS may provide headers as either:
+ * - Web API Headers object (with .get() method)
+ * - Plain Node.js-style object (with direct property access)
  */
-function hasServiceAuth(req: { headers: Headers }): boolean {
+function hasServiceAuth(req: { headers: unknown }): boolean {
   const serviceSecret = process.env.PAYLOAD_SERVICE_SECRET;
   if (!serviceSecret) return false;
 
-  const requestSecret = req.headers.get('x-payload-service-secret');
+  const headers = req.headers;
+  let requestSecret: string | null = null;
+
+  // Handle Web API Headers object (has .get method)
+  if (headers && typeof (headers as Headers).get === 'function') {
+    requestSecret = (headers as Headers).get('x-payload-service-secret');
+  }
+  // Handle Node.js-style plain object headers
+  else if (headers && typeof headers === 'object') {
+    const headersObj = headers as Record<string, string | string[] | undefined>;
+    const value = headersObj['x-payload-service-secret'];
+    requestSecret = Array.isArray(value) ? value[0] : value || null;
+  }
+
   return requestSecret === serviceSecret;
 }
 
