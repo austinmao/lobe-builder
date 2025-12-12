@@ -191,7 +191,10 @@ const DomainSettings = ({ tenant, onRefresh }: DomainSettingsProps) => {
             message={
               <Flexbox gap={8}>
                 <Text>
-                  {t('tenant.domain.domainConfigured', `Domain Configured: ${tenant.domain}`)}
+                  {t('tenant.domain.domainConfigured', {
+                    defaultValue: 'Domain Configured: {{domain}}',
+                    domain: tenant.domain,
+                  })}
                 </Text>
                 <div data-status="needs_verification">
                   <Text type="warning">
@@ -225,10 +228,10 @@ const DomainSettings = ({ tenant, onRefresh }: DomainSettingsProps) => {
             message={
               <Flexbox gap={8}>
                 <Text>
-                  {t(
-                    'tenant.domain.pendingVerification',
-                    `Domain: ${tenant.domain} - Pending Verification`,
-                  )}
+                  {t('tenant.domain.pendingVerification', {
+                    defaultValue: 'Domain: {{domain}} - Pending Verification',
+                    domain: tenant.domain,
+                  })}
                 </Text>
                 <div data-status="pending_verification">
                   <Text type="warning">
@@ -261,7 +264,12 @@ const DomainSettings = ({ tenant, onRefresh }: DomainSettingsProps) => {
           <Alert
             message={
               <Flexbox gap={8}>
-                <Text>{t('tenant.domain.verified', `Domain Verified: ${tenant.domain}`)}</Text>
+                <Text>
+                  {t('tenant.domain.verified', {
+                    defaultValue: 'Domain Verified: {{domain}}',
+                    domain: tenant.domain,
+                  })}
+                </Text>
                 <div data-status="verified">
                   <Text type="success">{t('tenant.domain.statusVerified', 'Verified')}</Text>
                 </div>
