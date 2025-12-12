@@ -177,14 +177,20 @@ export class VercelDomain {
 
     const data = await response.json();
 
+    // Handle case where verification array may be empty or undefined
+    // (e.g., when domain is already verified)
+    const verificationRecords = Array.isArray(data.verification)
+      ? data.verification.map((record: any) => ({
+          name: record.domain,
+          type: record.type,
+          value: record.value,
+        }))
+      : [];
+
     return {
       domain: data.name,
       success: true,
-      verificationRecords: data.verification.map((record: any) => ({
-        name: record.domain,
-        type: record.type,
-        value: record.value,
-      })),
+      verificationRecords,
       verified: data.verified,
     };
   }
@@ -217,13 +223,18 @@ export class VercelDomain {
       };
     }
 
+    // Handle case where verification array may be empty or undefined
+    const pendingRecords = Array.isArray(data.verification)
+      ? data.verification.map((record: any) => ({
+          name: record.domain,
+          type: record.type,
+          value: record.value,
+        }))
+      : [];
+
     return {
       domain: data.name,
-      pendingRecords: data.verification.map((record: any) => ({
-        name: record.domain,
-        type: record.type,
-        value: record.value,
-      })),
+      pendingRecords,
       verified: false,
     };
   }
