@@ -6,7 +6,12 @@ export const Users: CollectionConfig = {
     singular: 'User',
     plural: 'Users',
   },
-  auth: true,
+  auth: {
+    // Enable API key authentication for service-to-service calls
+    // Generate API keys via Admin UI: Users > Edit User > API Key section
+    // Use in requests: Authorization: users API-Key <key>
+    useAPIKey: true,
+  },
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'roles', 'updatedAt'],

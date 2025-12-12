@@ -3,6 +3,10 @@
  *
  * This repository provides database access for tenant records stored in Payload CMS.
  * It uses the Payload REST API to interact with the tenants collection.
+ *
+ * Authentication:
+ * - READ operations: Public (no auth required for service-to-service calls)
+ * - WRITE operations: Require PAYLOAD_API_KEY for admin-level access
  */
 import { payloadEnv } from '@/envs/payload';
 
@@ -61,13 +65,32 @@ function mapPayloadTenant(doc: Record<string, unknown>): TenantRecord {
  * Tenant repository for database operations via Payload REST API
  */
 export class TenantRepository {
+  private apiKey: string | undefined;
   private baseUrl: string;
 
   constructor() {
     this.baseUrl = payloadEnv.PAYLOAD_API_URL;
+    this.apiKey = payloadEnv.PAYLOAD_API_KEY;
     if (!this.baseUrl) {
       console.warn('PAYLOAD_API_URL not configured, TenantRepository will not work');
     }
+    if (!this.apiKey) {
+      console.warn('PAYLOAD_API_KEY not configured, TenantRepository write operations will fail');
+    }
+  }
+
+  /**
+   * Get headers for authenticated requests (write operations)
+   */
+  private getAuthHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+    if (this.apiKey) {
+      // Payload CMS uses 'users API-Key <key>' format for API key auth
+      headers['Authorization'] = `users API-Key ${this.apiKey}`;
+    }
+    return headers;
   }
 
   /**
@@ -169,26 +192,35 @@ export class TenantRepository {
   /**
    * Update tenant record
    *
+   * Requires PAYLOAD_API_KEY to be configured for authentication.
+   * The Payload Tenants collection requires admin role for update operations.
+   *
    * @param id - Tenant ID
    * @param updates - Partial tenant record with fields to update
    * @returns Promise resolving to updated tenant record
+   * @throws Error if PAYLOAD_API_KEY is not configured or update fails
    */
   async update(id: string, updates: Partial<TenantRecord>): Promise<TenantRecord> {
     if (!this.baseUrl) {
       throw new Error('PAYLOAD_API_URL not configured');
     }
 
+    if (!this.apiKey) {
+      throw new Error('PAYLOAD_API_KEY not configured. Required for tenant update operations.');
+    }
+
     try {
       const response = await fetch(`${this.baseUrl}/api/tenants/${id}`, {
         body: JSON.stringify(updates),
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this.getAuthHeaders(),
         method: 'PATCH',
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to update tenant: ${response.status} ${response.statusText}`);
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(
+          `Failed to update tenant: ${response.status} ${response.statusText}. ${errorText}`,
+        );
       }
 
       const doc = await response.json();

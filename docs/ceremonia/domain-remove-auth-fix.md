@@ -212,3 +212,180 @@ async function hasAdminPermission(
 5. Document MVP approach and future enhancement path clearly
 
 **Anti-pattern**: Assuming context fields exist without verifying the context creation logic populates them.
+
+---
+
+# Issue #2: Payload 403 Forbidden on Tenant Update
+
+**Date**: 2025-12-12
+**Issue**: After fixing Issue #1, domain remove now returns "Failed to update tenant: 403 Forbidden"
+**Status**: 🔧 Fix Deployed - Pending Configuration
+
+---
+
+## Problem Summary
+
+After deploying the `hasAdminPermission` fix, clicking "Remove Domain" now passes tRPC auth but fails when updating the tenant in Payload CMS:
+
+```
+TRPCClientError: Failed to update tenant: 403 Forbidden
+```
+
+## Root Cause Analysis
+
+The `TenantRepository.update()` method makes unauthenticated PATCH requests to the Payload CMS REST API:
+
+```typescript
+// BEFORE: No authentication
+const response = await fetch(`${this.baseUrl}/api/tenants/${id}`, {
+  body: JSON.stringify(updates),
+  headers: {
+    'Content-Type': 'application/json',
+    // ❌ Missing Authorization header!
+  },
+  method: 'PATCH',
+});
+```
+
+The Payload CMS Tenants collection requires admin role for update operations:
+
+```typescript
+// apps/payload/src/collections/Tenants.ts
+update: ({ req: { user } }) => {
+  return user?.roles?.includes('admin') === true; // Requires admin!
+};
+```
+
+## Solution
+
+### 1. Enable API Key Authentication in Payload Users Collection
+
+Updated `apps/payload/src/collections/Users.ts`:
+
+```typescript
+auth: {
+  // Enable API key authentication for service-to-service calls
+  useAPIKey: true,
+},
+```
+
+### 2. Add PAYLOAD_API_KEY Environment Configuration
+
+Updated `src/envs/payload.ts`:
+
+```typescript
+interface PayloadEnvConfig {
+  PAYLOAD_API_URL: string;
+  PAYLOAD_API_KEY: string | undefined; // NEW
+}
+```
+
+### 3. Update TenantRepository to Use Auth Header
+
+Updated `src/database/repositories/tenant.ts`:
+
+```typescript
+private getAuthHeaders(): Record<string, string> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  };
+  if (this.apiKey) {
+    // Payload CMS uses 'users API-Key <key>' format
+    headers['Authorization'] = `users API-Key ${this.apiKey}`;
+  }
+  return headers;
+}
+
+async update(id: string, updates: Partial<TenantRecord>): Promise<TenantRecord> {
+  // ... validation ...
+  const response = await fetch(`${this.baseUrl}/api/tenants/${id}`, {
+    body: JSON.stringify(updates),
+    headers: this.getAuthHeaders(), // ✅ Now authenticated
+    method: 'PATCH',
+  });
+  // ...
+}
+```
+
+---
+
+## Deployment Steps
+
+### Step 1: Deploy Code Changes
+
+```bash
+git add -A && git commit -m "🔧 fix: add Payload API key auth for tenant updates"
+git push
+```
+
+### Step 2: Generate API Key in Payload Admin
+
+1. Go to Payload Admin: `https://your-payload-url/admin`
+2. Navigate to Users collection
+3. Edit an admin user (with `admin` role)
+4. Scroll to "API Key" section (added by `useAPIKey: true`)
+5. Click "Generate API Key"
+6. Copy the generated key
+
+### Step 3: Add PAYLOAD_API_KEY to Vercel
+
+```bash
+vercel env add PAYLOAD_API_KEY production
+# Paste the API key when prompted
+```
+
+### Step 4: Redeploy
+
+```bash
+vercel --prod
+```
+
+---
+
+## Local Testing
+
+1. Start Payload dev server:
+
+   ```bash
+   cd apps/payload && bun run dev
+   ```
+
+2. Log in to <http://localhost:3011/admin>
+
+3. Edit admin user → Generate API Key → Copy key
+
+4. Add to `.env.local`:
+
+   ```
+   PAYLOAD_API_KEY=your-generated-key
+   ```
+
+5. Start main app:
+
+   ```bash
+   bun run dev
+   ```
+
+6. Navigate to <http://localhost:3010/settings?active=tenant>
+
+7. Log in and click "Remove Domain"
+
+8. Should succeed without 403 error
+
+---
+
+## Files Modified
+
+1. `apps/payload/src/collections/Users.ts` - Enable API key auth
+2. `src/envs/payload.ts` - Add PAYLOAD_API_KEY config
+3. `src/database/repositories/tenant.ts` - Add auth headers for write operations
+
+---
+
+## Verification Checklist
+
+- [ ] Code deployed to production
+- [ ] API key generated in Payload admin
+- [ ] PAYLOAD_API_KEY env var added to Vercel
+- [ ] Production redeployed
+- [ ] Domain remove works in production
