@@ -1,0 +1,52 @@
+<testsuites id="" name="" tests="12" failures="0" skipped="12" errors="0" time="0.019283999999999992">
+<testsuite name="ceremonia/tenant-domain-settings.spec.ts" timestamp="2025-12-12T10:03:01.775Z" hostname="chromium" tests="12" failures="0" skipped="12" time="0" errors="0">
+<testcase name="Tenant Domain Settings UI › 1.1: should navigate to tenant settings page" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 1.2: should redirect unauthenticated users to login" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 2.1: should display no domain status when tenant has no domain" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 2.2: should display pending verification status correctly" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 2.3: should display verified status correctly" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 2.4: should handle domain with null status (legacy data edge case)" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 3.1: should add domain successfully via modal form" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 3.2: should validate domain format and show error messages" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 4.1: should verify domain successfully" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 4.2: should handle verification error when VERCEL_API_TOKEN is missing" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 5.1: should remove domain successfully with confirmation" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tenant Domain Settings UI › 6.1: should be fully keyboard accessible" classname="ceremonia/tenant-domain-settings.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+</testsuites>

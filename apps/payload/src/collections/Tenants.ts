@@ -1,5 +1,17 @@
 import type { CollectionConfig } from 'payload';
 
+/**
+ * Check if request has valid service authentication
+ * Service auth uses PAYLOAD_SERVICE_SECRET header for service-to-service calls
+ */
+function hasServiceAuth(req: { headers: Headers }): boolean {
+  const serviceSecret = process.env.PAYLOAD_SERVICE_SECRET;
+  if (!serviceSecret) return false;
+
+  const requestSecret = req.headers.get('x-payload-service-secret');
+  return requestSecret === serviceSecret;
+}
+
 export const Tenants: CollectionConfig = {
   slug: 'tenants',
   labels: {
@@ -42,8 +54,12 @@ export const Tenants: CollectionConfig = {
       // Only admin users can create tenants
       return user?.roles?.includes('admin') === true;
     },
-    update: ({ req: { user } }) => {
-      // Only admin users can update tenants
+    update: ({ req }) => {
+      const { user } = req;
+      // Allow service-to-service calls with valid service secret
+      // This enables the main app to update tenant domain settings
+      if (hasServiceAuth(req)) return true;
+      // Admin users can update tenants via admin UI
       return user?.roles?.includes('admin') === true;
     },
     delete: ({ req: { user } }) => {

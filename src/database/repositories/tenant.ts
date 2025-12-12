@@ -6,7 +6,7 @@
  *
  * Authentication:
  * - READ operations: Public (no auth required for service-to-service calls)
- * - WRITE operations: Require PAYLOAD_API_KEY for admin-level access
+ * - WRITE operations: Require PAYLOAD_SERVICE_SECRET header for service-level access
  */
 import { payloadEnv } from '@/envs/payload';
 
@@ -65,30 +65,32 @@ function mapPayloadTenant(doc: Record<string, unknown>): TenantRecord {
  * Tenant repository for database operations via Payload REST API
  */
 export class TenantRepository {
-  private apiKey: string | undefined;
   private baseUrl: string;
+  private serviceSecret: string | undefined;
 
   constructor() {
     this.baseUrl = payloadEnv.PAYLOAD_API_URL;
-    this.apiKey = payloadEnv.PAYLOAD_API_KEY;
+    this.serviceSecret = payloadEnv.PAYLOAD_SERVICE_SECRET;
     if (!this.baseUrl) {
       console.warn('PAYLOAD_API_URL not configured, TenantRepository will not work');
     }
-    if (!this.apiKey) {
-      console.warn('PAYLOAD_API_KEY not configured, TenantRepository write operations will fail');
+    if (!this.serviceSecret) {
+      console.warn(
+        'PAYLOAD_SERVICE_SECRET not configured, TenantRepository write operations will fail',
+      );
     }
   }
 
   /**
    * Get headers for authenticated requests (write operations)
+   * Uses service secret header for service-to-service authentication
    */
   private getAuthHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
-    if (this.apiKey) {
-      // Payload CMS uses 'users API-Key <key>' format for API key auth
-      headers['Authorization'] = `users API-Key ${this.apiKey}`;
+    if (this.serviceSecret) {
+      headers['x-payload-service-secret'] = this.serviceSecret;
     }
     return headers;
   }
@@ -192,21 +194,23 @@ export class TenantRepository {
   /**
    * Update tenant record
    *
-   * Requires PAYLOAD_API_KEY to be configured for authentication.
-   * The Payload Tenants collection requires admin role for update operations.
+   * Requires PAYLOAD_SERVICE_SECRET to be configured for authentication.
+   * Uses service-to-service auth header to update tenants from the main app.
    *
    * @param id - Tenant ID
    * @param updates - Partial tenant record with fields to update
    * @returns Promise resolving to updated tenant record
-   * @throws Error if PAYLOAD_API_KEY is not configured or update fails
+   * @throws Error if PAYLOAD_SERVICE_SECRET is not configured or update fails
    */
   async update(id: string, updates: Partial<TenantRecord>): Promise<TenantRecord> {
     if (!this.baseUrl) {
       throw new Error('PAYLOAD_API_URL not configured');
     }
 
-    if (!this.apiKey) {
-      throw new Error('PAYLOAD_API_KEY not configured. Required for tenant update operations.');
+    if (!this.serviceSecret) {
+      throw new Error(
+        'PAYLOAD_SERVICE_SECRET not configured. Required for tenant update operations.',
+      );
     }
 
     try {
