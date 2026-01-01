@@ -1,12 +1,10 @@
 /**
  * Layout for Ceremonia Year Reflection Page
  *
- * Minimal layout for the interactive reflection form.
- * Includes Ceremonia brand colors as CSS variables.
+ * Nested layout that adds Ceremonia brand colors as CSS variables.
+ * Note: html/body tags are defined in parent layout at /page/layout.tsx
  */
-import { ReactNode } from 'react';
-
-import '@/styles/untitled-ui-theme.css';
+import type { ReactNode } from 'react';
 
 export const metadata = {
   description:
@@ -26,37 +24,30 @@ export const metadata = {
 
 export default function CeremoniaReflectionLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              :root {
-                --ceremonia-sol-orange: #FBAE17;
-                --ceremonia-corazon-rose: #E31C78;
-                --ceremonia-cielo-blue: #6283C2;
-                --ceremonia-tierra-teal: #65C5B2;
-                --ceremonia-charcoal: #222;
-                --ceremonia-charcoal-light: #333;
-                --ceremonia-bg: #FAFAFA;
-              }
-            `,
-          }}
-        />
-      </head>
-      <body
-        className="light-mode"
-        style={{
-          backgroundColor: 'var(--ceremonia-bg)',
-          color: 'var(--ceremonia-charcoal)',
-          fontFamily:
-            'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
-          lineHeight: 1.6,
-          margin: 0,
+    <>
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            :root {
+              --ceremonia-sol-orange: #FBAE17;
+              --ceremonia-corazon-rose: #E31C78;
+              --ceremonia-cielo-blue: #6283C2;
+              --ceremonia-tierra-teal: #65C5B2;
+              --ceremonia-charcoal: #222;
+              --ceremonia-charcoal-light: #333;
+              --ceremonia-bg: #FAFAFA;
+            }
+            body {
+              background-color: var(--ceremonia-bg);
+              color: var(--ceremonia-charcoal);
+              font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+              line-height: 1.6;
+              margin: 0;
+            }
+          `,
         }}
-      >
-        {children}
-      </body>
-    </html>
+      />
+      {children}
+    </>
   );
 }
