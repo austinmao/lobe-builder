@@ -459,6 +459,19 @@ tasks:
     dependencies: ["TASK-030"]
     tests_to_pass: []
 
+  # ============================================================
+  # NEW FEATURES: Post-launch enhancements
+  # ============================================================
+  - id: TASK-032
+    title: "Build Ceremonia Year Reflection interactive landing page"
+    phase: new-features
+    status: in_progress
+    priority: P1
+    estimated_minutes: 300
+    dependencies: []
+    path: ".meridian/tasks/TASK-032/"
+    tests_to_pass: []
+
 statistics:
   total_generated: 31
   total_planned: 31

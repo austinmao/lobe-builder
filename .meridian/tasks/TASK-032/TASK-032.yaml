@@ -1,0 +1,107 @@
+id: TASK-032
+title: "Build Ceremonia Year Reflection interactive landing page"
+status: in_progress
+priority: P1
+
+objective: >
+  Create an interactive, single-page Year Reflection form at /lp/ceremonia-new-year-manifestation-guide
+  with month-by-month reflections, "Zoom Out" sections, localStorage autosave, and export capabilities
+  (JSON, Markdown, Print-to-PDF). Accessible via custom domain live.ceremoniacircle.org.
+
+constraints:
+  - Must use Tailwind CSS + CSS variables (consistent with Untitled UI pattern)
+  - Page must be standalone (not CMS-managed via Payload blocks)
+  - Custom domain only access (via existing /lp/* middleware rewrite)
+  - Client-side only - no backend required for form storage
+  - Must support print-to-PDF via browser (no server-side PDF generation)
+
+requirements:
+  - id: R1
+    description: Page route and layout setup
+    acceptance_criteria: |
+      - Page loads at live.ceremoniacircle.org/lp/ceremonia-new-year-manifestation-guide
+      - Minimal layout without main app chrome
+      - Ceremonia brand colors as CSS variables
+    status: todo
+  - id: R2
+    description: Month-by-month reflection form (12 months)
+    acceptance_criteria: |
+      - 12 accordion sections (Jan-Dec), collapsible
+      - January open by default, others closed
+      - Each month has 4 fields: stoodOut, emotions, innerState, chapterTitle
+      - Progress indicator shows X/12 completed
+      - Completed state when all 4 fields have content
+    status: todo
+  - id: R3
+    description: Zoom Out sections (3 sections)
+    acceptance_criteria: |
+      - Pendulums section with Cielo Blue (#6283C2) accent
+      - Importance section with Corazón Rose (#E31C78) accent
+      - Choosing Your Next Line section with Sol Orange (#FBAE17) accent
+      - State selector chips for Next Line (Ease/Trust/Presence/Clarity/etc.)
+    status: todo
+  - id: R4
+    description: LocalStorage autosave
+    acceptance_criteria: |
+      - Debounced autosave to localStorage
+      - "Saved" indicator with timestamp
+      - Restore state on page reload
+      - Clear data button with confirmation modal
+    status: todo
+  - id: R5
+    description: Export functionality
+    acceptance_criteria: |
+      - Export JSON button (downloads .json file)
+      - Copy JSON to clipboard button
+      - Export Markdown button (downloads .md file)
+      - Print stylesheet for browser print-to-PDF
+    status: todo
+  - id: R6
+    description: UI polish and accessibility
+    acceptance_criteria: |
+      - Mobile responsive (mobile-first)
+      - Accessible (labels, ARIA, keyboard navigation)
+      - Ceremonia branding (colors, typography, spacing)
+      - Sticky nav with progress and jump-to-month
+    status: todo
+
+deliverables:
+  - Code: src/app/page/ceremonia/ceremonia-new-year-manifestation-guide/
+  - Code: src/features/CeremoniaReflection/
+  - Tests: Manual testing via custom domain
+
+implementation_notes:
+  - "Use Tailwind classes with CSS variables from untitled-ui-theme.css"
+  - "Reference existing section components: src/components/PageRenderer/sections/"
+  - "Use ahooks useLocalStorageState for persistence"
+  - "Use @lobechat/utils exportFile/exportJSONFile for exports"
+
+risks:
+  - desc: Tailwind config may not cover main app src/ paths
+    mitigation: Check if tailwind.config.ts content array includes src/app/page/
+
+validation:
+  commands:
+    - bun run type-check
+  manual_steps:
+    - Verify page loads on custom domain
+    - Test all 12 month accordions
+    - Test localStorage persistence across refresh
+    - Test all export functions
+    - Test print stylesheet
+
+links:
+  files:
+    - src/styles/untitled-ui-theme.css
+    - src/components/PageRenderer/sections/HeroSection.tsx
+  docs:
+    - /Users/austinmao/.claude/plans/ethereal-juggling-noodle.md
+
+resources:
+  docs:
+    - .meridian/CODE_GUIDE.md
+  code_paths:
+    - src/app/page/layout.tsx
+    - src/components/PageRenderer/
+  context_files:
+    - packages/utils/src/client/exportFile.ts
