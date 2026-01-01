@@ -49,20 +49,20 @@ test.describe('Ceremonia Year Reflection Page', () => {
   test('should have January accordion open by default', async ({ page }) => {
     await page.goto(PAGE_URL);
 
-    // January should be open (expanded)
-    const januaryButton = page.locator('button[aria-controls="month-content-january"]');
+    // January should be open (expanded) - note: aria-controls uses capitalized month name
+    const januaryButton = page.locator('button[aria-controls="month-content-January"]');
     await expect(januaryButton).toHaveAttribute('aria-expanded', 'true');
 
     // Other months should be closed
-    const februaryButton = page.locator('button[aria-controls="month-content-february"]');
+    const februaryButton = page.locator('button[aria-controls="month-content-February"]');
     await expect(februaryButton).toHaveAttribute('aria-expanded', 'false');
   });
 
   test('should toggle month accordion on click', async ({ page }) => {
     await page.goto(PAGE_URL);
 
-    // Click February to open it
-    const februaryButton = page.locator('button[aria-controls="month-content-february"]');
+    // Click February to open it - note: aria-controls uses capitalized month name
+    const februaryButton = page.locator('button[aria-controls="month-content-February"]');
     await februaryButton.click();
     await expect(februaryButton).toHaveAttribute('aria-expanded', 'true');
 
@@ -90,16 +90,15 @@ test.describe('Ceremonia Year Reflection Page', () => {
   test('should display state chips in Next Line section', async ({ page }) => {
     await page.goto(PAGE_URL);
 
-    // Check for state chip buttons
+    // Check for state chip buttons - these match NEXT_LINE_STATES from types.ts
     const states = [
       'Ease',
       'Trust',
       'Presence',
       'Clarity',
-      'Flow',
-      'Gratitude',
+      'Grounded Confidence',
       'Openness',
-      'Peace',
+      'Devotion',
     ];
     for (const state of states) {
       await expect(page.getByRole('radio', { name: state })).toBeVisible();
@@ -109,16 +108,23 @@ test.describe('Ceremonia Year Reflection Page', () => {
   test('should save form data to localStorage', async ({ page }) => {
     await page.goto(PAGE_URL);
 
-    // Fill in January's "stoodOut" field
-    const stoodOutField = page.locator('#january-stoodOut');
+    // Fill in January's "stoodOut" field - field ID uses capitalized month name
+    const stoodOutField = page.locator('#January-stoodOut');
     await stoodOutField.fill('Test entry for January');
 
     // Wait for autosave
     await page.waitForTimeout(500);
 
-    // Verify localStorage has data
+    // Verify localStorage has data - key may vary by year
     const storageData = await page.evaluate(() => {
-      return localStorage.getItem('ceremonia-year-reflection-2024');
+      // Check for any ceremonia reflection data key
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('ceremonia-year-reflection')) {
+          return localStorage.getItem(key);
+        }
+      }
+      return null;
     });
     expect(storageData).toBeTruthy();
     expect(storageData).toContain('Test entry for January');
@@ -127,8 +133,8 @@ test.describe('Ceremonia Year Reflection Page', () => {
   test('should persist data on page reload', async ({ page }) => {
     await page.goto(PAGE_URL);
 
-    // Fill in data
-    const stoodOutField = page.locator('#january-stoodOut');
+    // Fill in data - field ID uses capitalized month name
+    const stoodOutField = page.locator('#January-stoodOut');
     await stoodOutField.fill('Persistent test data');
 
     // Wait for autosave
@@ -144,8 +150,8 @@ test.describe('Ceremonia Year Reflection Page', () => {
   test('should show progress indicator', async ({ page }) => {
     await page.goto(PAGE_URL);
 
-    // Check progress indicator exists
-    await expect(page.getByText(/0\/12 months/)).toBeVisible();
+    // Check progress indicator exists - matches "0/12 months completed" format
+    await expect(page.getByText(/0\/12 months completed/)).toBeVisible();
   });
 
   test('should display sticky navigation', async ({ page }) => {
@@ -162,10 +168,10 @@ test.describe('Ceremonia Year Reflection Page', () => {
   test('should have export buttons', async ({ page }) => {
     await page.goto(PAGE_URL);
 
-    // Check export buttons in sticky nav
+    // Check export buttons in sticky nav - use exact match for "Print" to avoid matching "Print / PDF"
     await expect(page.getByRole('button', { name: /json/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /md/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /print/i })).toBeVisible();
+    await expect(page.getByRole('button', { exact: true, name: 'Print' })).toBeVisible();
   });
 
   test('should open clear data modal', async ({ page }) => {
@@ -182,8 +188,8 @@ test.describe('Ceremonia Year Reflection Page', () => {
   test('should clear data when confirmed', async ({ page }) => {
     await page.goto(PAGE_URL);
 
-    // Fill in some data first
-    const stoodOutField = page.locator('#january-stoodOut');
+    // Fill in some data first - field ID uses capitalized month name
+    const stoodOutField = page.locator('#January-stoodOut');
     await stoodOutField.fill('Data to be cleared');
     await page.waitForTimeout(500);
 
