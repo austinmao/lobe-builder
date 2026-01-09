@@ -37,3 +37,4 @@ export const metadata: Metadata = {
 export default function AwakenTogetherPage() {
   return <AwakenTogetherLanding />;
 }
+// Deployed: Fri Jan  9 13:57:56 CET 2026
