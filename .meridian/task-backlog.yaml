@@ -494,6 +494,7 @@ tasks:
       - All lint/type checks passing
       - Local URL: /page/ceremonia/heartmind-awaken-together-live-course-feb-2026
       - Production URL: live.ceremoniacircle.org/lp/heartmind-awaken-together-live-course-feb-2026
+      - Deployment note: Initial Vercel builds failed with OOM; resolved by retry via Vercel dashboard (OOM can be intermittent)
 
 statistics:
   total_generated: 32
