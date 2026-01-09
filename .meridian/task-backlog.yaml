@@ -478,9 +478,26 @@ tasks:
       - 14 E2E tests passing
       - Deployed to: live.ceremoniacircle.org/lp/ceremonia-new-year-manifestation-guide
 
+  - id: TASK-033
+    title: "Build Awaken Together live course landing page"
+    phase: new-features
+    status: done
+    priority: P1
+    estimated_minutes: 120
+    dependencies: []
+    tests_to_pass: []
+    completion_notes: |
+      - 5-week live course landing page for Feb 2026 cohort
+      - Full conversion-optimized layout with 14 sections
+      - UntitledUI design patterns with Ceremonia brand colors (#9D7C4D)
+      - Responsive design (mobile-first)
+      - All lint/type checks passing
+      - Local URL: /page/ceremonia/heartmind-awaken-together-live-course-feb-2026
+      - Production URL: live.ceremoniacircle.org/lp/heartmind-awaken-together-live-course-feb-2026
+
 statistics:
-  total_generated: 31
-  total_planned: 31
+  total_generated: 32
+  total_planned: 32
   phases_generated: 5
   phases_remaining: 0
   estimated_total_minutes: 865
